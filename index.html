@@ -46,6 +46,14 @@
         a {
             color: blue;
         }
+
+        a:hover {
+            color: royalblue;
+        }
+
+        a:active {
+            color: dodgerblue;
+        }
     </style>
 </head>
 
@@ -143,7 +151,7 @@
         showTips();
         if (!location.toString().startsWith("file:")) {
             s = document.createElement("script");
-            s.src = "https://lll69.github.io/tools/track.js";
+            s.src = "/track.js";
             s.setAttribute("defer", "");
             s.setAttribute("async", "");
             document.head.appendChild(s);
