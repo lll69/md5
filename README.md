@@ -1,1 +1,1 @@
-# MD5
+# [MD5](https://getmd5.js.org)
