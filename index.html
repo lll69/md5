@@ -63,7 +63,7 @@
 <body style="margin:8px">
     <div class="div d">
         <div class="center nopointer" style="top:calc((100% - 40px)/4);font-size:2em;word-break:break-all">
-            <p id="filename" style="text-decoration:underline"></p>
+            <p id="filename" style="text-decoration:underline;margin:16px;"></p>
             <noscript>Enable Javascript</noscript>
         </div>
         <input type="file" id="file" class="fill" style="cursor:pointer">
@@ -71,7 +71,7 @@
     <div style="height:20px"></div>
     <div class="div d">
         <div class="center" style="top:calc((100% - 40px)/4*3 + 20px)">
-            <progress id="progress" value="0" hidden></progress>
+            <progress id="progress" value="0" hidden style="width:32ch"></progress>
             <span id="md5">Result</span>
             <button id="copy" hidden style="user-select:none" data-clipboard-target="#md5"><img alt="Copy"
                     src="content_copy.svg" id="copyImg"></button>
@@ -95,53 +95,55 @@
             copy = document.querySelector("#copy"),
             copyImg = document.querySelector("#copyImg");
         document.getElementById('file').addEventListener('change', function () {
-            var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-                file = this.files[0],
-                chunkSize = 8388608,
-                chunks = Math.ceil(file.size / chunkSize),
-                currentChunk = 0,
-                spark = new SparkMD5.ArrayBuffer(),
-                fileReader = new FileReader(),
-                progress = document.querySelector("#progress"),
-                md5 = document.querySelector("#md5");
-            tip = false;
-            showTips();
-            hideIcon();
-            console.log(file);
-            fileElement = this;
-            filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
-            progress.hidden = false;
-            md5.textContent = "";
-            md5.hidden = true;
-            copy.hidden = true;
-            fileReader.onload = function (e) {
-                console.log("read chunk nr", currentChunk + 1, "of", chunks);
-                spark.append(e.target.result);
-                currentChunk++;
-                if (currentChunk < chunks) {
-                    loadNext()
-                } else {
-                    progress.value = chunks;
-                    progress.hidden = true;
-                    console.log("finished loading");
-                    console.info("computed hash", md5.textContent = spark.end());
-                    fileElement.value = null;
-                    md5.hidden = false;
-                    copy.hidden = false
-                }
-            };
-            fileReader.onerror = function (e) {
-                console.warn(md5.textContent = e)
-            };
+            setTimeout(function (e) {
+                var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+                    file = e.files[0],
+                    chunkSize = 8388608,
+                    chunks = Math.ceil(file.size / chunkSize),
+                    currentChunk = 0,
+                    spark = new SparkMD5.ArrayBuffer(),
+                    fileReader = new FileReader(),
+                    progress = document.querySelector("#progress"),
+                    md5 = document.querySelector("#md5");
+                tip = false;
+                showTips();
+                hideIcon();
+                console.log(file);
+                fileElement = e;
+                filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
+                progress.hidden = false;
+                md5.textContent = "";
+                md5.hidden = true;
+                copy.hidden = true;
+                fileReader.onload = function (e) {
+                    console.log("read chunk nr", currentChunk + 1, "of", chunks);
+                    spark.append(e.target.result);
+                    currentChunk++;
+                    if (currentChunk < chunks) {
+                        loadNext()
+                    } else {
+                        progress.value = chunks;
+                        progress.hidden = true;
+                        console.log("finished loading");
+                        console.info("computed hash", md5.textContent = spark.end());
+                        fileElement.value = null;
+                        md5.hidden = false;
+                        copy.hidden = false
+                    }
+                };
+                fileReader.onerror = function (e) {
+                    console.warn(md5.textContent = e)
+                };
 
-            function loadNext() {
-                progress.value = currentChunk;
-                progress.max = chunks;
-                var start = currentChunk * chunkSize,
-                    end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
-                fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
-            }
-            loadNext();
+                function loadNext() {
+                    progress.value = currentChunk;
+                    progress.max = chunks;
+                    var start = currentChunk * chunkSize,
+                        end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+                    fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
+                }
+                loadNext();
+            }, 0, this);
         });
         function showTips() {
             if (tip !== false) {
@@ -165,11 +167,10 @@
             document.head.appendChild(s);
         }
         function copied() {
-            setInterval(hideIcon, 1000);
+            setTimeout(hideIcon, 1000);
             copyImg.src = "done.svg";
         }
         function hideIcon() {
-            clearInterval(hideIcon);
             copyImg.src = "content_copy.svg";
         }
     </script>
