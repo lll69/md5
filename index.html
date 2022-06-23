@@ -128,11 +128,16 @@
                         console.info("computed hash", md5.textContent = spark.end());
                         fileElement.value = null;
                         md5.hidden = false;
-                        copy.hidden = false
+                        copy.hidden = false;
                     }
                 };
                 fileReader.onerror = function (e) {
-                    console.warn(md5.textContent = e)
+                    console.warn(md5.textContent = e.target.error);
+                    progress.value = chunks;
+                    progress.hidden = true;
+                    fileElement.value = null;
+                    md5.hidden = false;
+                    copy.hidden = false;
                 };
 
                 function loadNext() {
