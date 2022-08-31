@@ -158,7 +158,7 @@
                         progress.value = chunks;
                         progress.hidden = true;
                         time = new Date().getTime() - time;
-                        console.log("finished loading, took", time, "ms");
+                        console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
                         console.info("computed hash", md5.textContent = spark.end());
                         fileElement.value = null;
                         md5.hidden = false;
