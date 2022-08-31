@@ -93,8 +93,9 @@
                     <td>
                         <progress id="progress" value="0" hidden style="width:32ch"></progress>
                         <span id="md5">Result</span>
-                        <button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#md5"><img alt="Copy"
-                                src="content_copy.svg" id="copyImg"></button>
+                        <button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#md5">
+                            <img alt="Copy" src="content_copy.svg" id="copyImg">
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -106,11 +107,14 @@
             |
             <a href="/text.html">Text</a>
             |
-            <a href="https://github.com/js-org/js.org" data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
+            <a href="https://github.com/js-org/js.org"
+                data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
             |
-            <a href="https://github.com/satazor/js-spark-md5" data-goatcounter-click="https://github.com/satazor/js-spark-md5">SparkMD5</a>
+            <a href="https://github.com/satazor/js-spark-md5"
+                data-goatcounter-click="https://github.com/satazor/js-spark-md5">SparkMD5</a>
             |
-            <a href="https://github.com/zenorocha/clipboard.js" data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
+            <a href="https://github.com/zenorocha/clipboard.js"
+                data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
             <img hidden src="content_copy.svg">
             <img hidden src="done.svg">
         </div>
@@ -131,7 +135,9 @@
                     spark = new SparkMD5.ArrayBuffer(),
                     fileReader = new FileReader(),
                     progress = document.querySelector("#progress"),
-                    md5 = document.querySelector("#md5");
+                    md5 = document.querySelector("#md5"),
+                    time = new Date().getTime(),
+                    time2 = time;
                 tip = false;
                 showTips();
                 hideIcon();
@@ -140,7 +146,7 @@
                 filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
                 progress.hidden = false;
                 md5.textContent = "";
-                md5.hidden = true;
+                md5.hidden = !true;
                 copy.hidden = true;
                 fileReader.onload = function (e) {
                     console.log("read chunk nr", currentChunk + 1, "of", chunks);
@@ -151,7 +157,8 @@
                     } else {
                         progress.value = chunks;
                         progress.hidden = true;
-                        console.log("finished loading");
+                        time = new Date().getTime() - time;
+                        console.log("finished loading, took", time, "ms");
                         console.info("computed hash", md5.textContent = spark.end());
                         fileElement.value = null;
                         md5.hidden = false;
@@ -168,6 +175,9 @@
                 };
 
                 function loadNext() {
+                    var t = new Date().getTime();
+                    md5.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+                    time2 = t;
                     progress.value = currentChunk;
                     progress.max = chunks;
                     var start = currentChunk * chunkSize,
