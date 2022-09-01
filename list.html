@@ -11,14 +11,26 @@
     <link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
+
 <body>
+    <h1>List</h1>
     <ul>
         <li>
             <a href="/">MD5</a>
+        </li>
+        <li>
             <a href="/sha1.html">SHA1</a>
+        </li>
+        <li>
             <a href="/sha256.html">SHA256</a>
         </li>
     </ul>
+    <script>
+        var title = "List of" + location.host;
+        document.title = title;
+        document.querySelector("h1").textContent = title;
+    </script>
     <script defer async src="/track.js"></script>
 </body>
+
 </html>
