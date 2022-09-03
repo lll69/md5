@@ -207,7 +207,8 @@
                         progress.hidden = true;
                         time = new Date().getTime() - time;
                         console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
-                        console.info("computed hash", c32.textContent = new Uint32Array([spark])[0].toString(16));
+                        console.info("computed hash", spark);
+                        c32.textContent = new Uint32Array([spark])[0].toString(16).padStart(8, "0");
                         fileElement.value = null;
                         c32.hidden = false;
                         copy.hidden = false;
