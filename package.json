@@ -1,0 +1,6 @@
+{
+    "dependencies": {
+        "node-fetch": "^2.6.0",
+        "spark-md5": "^3.0.2"
+    }
+}
