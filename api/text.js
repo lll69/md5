@@ -8,26 +8,26 @@ function getClientIp(req) {
 export default async function handler(request, response) {
     try {
         var result = {};
-        var { text, type, raw } = request.query;
+        var { text, type } = request.query;
         response.setHeader("Access-Control-Allow-Origin", "*");
-        if (text === undefined) {
-            response.setHeader("Content-Type", "text/plain");
-            response.status(200);
-            return response.send("No text, use `%23` instead of `#`");
-        }
-        raw = Number(raw);
-        if (!type) type = "json";
-        result.text = SparkMD5.hash(text, Boolean(raw));
         result.ip = getClientIp(request);
+        if (text === undefined) {
+            throw new Error("No text, use `%23` instead of `#`");
+        }
+        if (!type) type = "json";
+        result.md5 = SparkMD5.hash(text, false);
+        result.raw = SparkMD5.hash(text, true);
         if (type == "json") {
+            response.setHeader("Content-Type", "text/json; charset=utf-8");
             return response.json(result);
         } else {
-            response.setHeader("Content-Type", "text/plain");
-            return response.send(result.text);
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            return response.send(result.md5);
         }
     } catch (err) {
         result.error = String(e);
         response.status(400);
+        response.setHeader("Content-Type", "text/json; charset=utf-8");
         return response.json(result);
     }
 }
