@@ -24,7 +24,7 @@ export default async function handler(request, response) {
             response.setHeader("Content-Type", "text/plain; charset=utf-8");
             return response.send(result.md5);
         }
-    } catch (err) {
+    } catch (e) {
         result.error = String(e);
         response.status(400);
         response.setHeader("Content-Type", "text/json; charset=utf-8");
