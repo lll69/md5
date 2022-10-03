@@ -10,8 +10,8 @@
     <link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
     <!--
     <link rel="preload" href="content_copy.svg" as="image">
-    <link rel="preload" href="done.svg" as="image">
     -->
+    <link rel="preload" href="done.svg" as="image">
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         .div {
@@ -103,7 +103,7 @@
     </div>
     <div style="height:20px;white-space:nowrap;text-align:center;font-size:18px;max-width:100%">
         <div style="overflow-x:auto">
-            <a href="/list.html">Other tools</a>
+            <a href="/list.html">Tools</a>
             |
             <a href="/text.html">Text</a>
             |
@@ -176,7 +176,8 @@
 
                 function loadNext() {
                     var t = new Date().getTime();
-                    md5.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+                    if (currentChunk > 0)
+                        md5.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
                     time2 = t;
                     progress.value = currentChunk;
                     progress.max = chunks;

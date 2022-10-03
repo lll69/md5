@@ -10,14 +10,20 @@
     <link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
-        body{
+        body {
             margin: 16px 32px;
         }
     </style>
+    <script>
+        var title = "List of " + (location.host || location.href);
+        document.title = title;
+        var h1 = document.createElement("h1");
+        h1.textContent = title;
+        document.write(h1.outerHTML);
+    </script>
 </head>
 
 <body>
-    <h1>List</h1>
     <ul>
         <li>
             <a href="/">MD5</a>
@@ -32,11 +38,6 @@
             <a href="/crc32.html">CRC32</a>
         </li>
     </ul>
-    <script>
-        var title = "List of " + location.host;
-        document.title = title;
-        document.querySelector("h1").textContent = title;
-    </script>
     <script defer async src="/track.js"></script>
 </body>
 
