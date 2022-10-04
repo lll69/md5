@@ -11,7 +11,7 @@ export default async function handler(request, response) {
         var { text, type } = request.query;
         response.setHeader("Access-Control-Allow-Origin", "*");
         result.ip = getClientIp(request);
-        result.userAgent = req.headers["user-agent"];
+        result.userAgent = request.headers["user-agent"];
         if (text === undefined) {
             throw new Error("No text, use `%23` instead of `#`");
         }
