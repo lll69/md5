@@ -174,7 +174,7 @@
             copy = document.querySelector("#copy"),
             copyImg = document.querySelector("#copyImg");
         document.getElementById('file').addEventListener('change', function () {
-            setTimeout(function (e) {
+            (function (e) {
                 var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
                     file = e.files[0],
                     chunkSize = 8388608,
@@ -235,7 +235,7 @@
                     fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
                 }
                 loadNext();
-            }, 0, this);
+            })(this);
         });
         function showTips() {
             if (tip !== false) {
