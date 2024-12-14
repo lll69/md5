@@ -153,6 +153,7 @@
                 fileElement = e;
                 filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
                 progress.hidden = false;
+                fileElement.hidden = true;
                 sha1.textContent = "";
                 sha1.hidden = !true;
                 copy.hidden = true;
@@ -165,6 +166,7 @@
                     } else {
                         progress.value = chunks;
                         progress.hidden = true;
+                        fileElement.hidden = false;
                         time = new Date().getTime() - time;
                         console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
                         console.info("computed hash", sha1.textContent = spark.hex());
@@ -177,9 +179,10 @@
                     console.warn(sha1.textContent = e.target.error);
                     progress.value = chunks;
                     progress.hidden = true;
+                    fileElement.hidden = false;
                     fileElement.value = null;
                     sha1.hidden = false;
-                    copy.hidden = false;
+                    copy.hidden = true;
                 };
 
                 function loadNext() {
@@ -199,7 +202,7 @@
         function showTips() {
             if (tip !== false) {
                 if (tip == "Drag a file here") {
-                    tip = "Click to select";
+                    tip = "Click to select file";
                 } else {
                     tip = "Drag a file here";
                 }
