@@ -1,276 +1,274 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Get CRC32</title>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <meta name="description" content="Online CRC32 hash calculator">
-    <meta name="keywords" content="crc32,hash,calculator">
-    <link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
-    <link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
-    <!--
-    <link rel="preload" href="content_copy.svg" as="image">
-    -->
-    <link rel="preload" href="done.svg" as="image">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        .div {
-            border: 1px solid#ccc;
-            border-radius: 3em;
-            box-sizing: border-box
-        }
+	<meta charset="utf-8">
+	<title>Get CRC32</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<meta name="description" content="Online CRC32 hash calculator">
+	<meta name="keywords" content="crc32,hash,calculator">
+	<link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
+	<link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
+	<!--
+	<link rel="preload" href="content_copy.svg" as="image">
+	-->
+	<link rel="preload" href="done.svg" as="image">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<style>
+		html {
+			height: 100%;
+		}
 
-        .div:hover {
-            border-color: #999
-        }
+		body {
+			margin: 8px;
+			height: 100%;
+			overflow: hidden;
+		}
 
-        .d {
-            width: 100%;
-            height: calc((100% - 40px)/2)
-        }
+		.div {
+			border: 1px solid#ccc;
+			border-radius: 3em;
+			box-sizing: border-box
+		}
 
-        .nopointer {
-            pointer-events: none
-        }
+		.div:hover {
+			border-color: #999
+		}
 
-        .fill {
-            width: 100%;
-            height: 100%;
-        }
+		.d {
+			width: 100%;
+			height: calc((100% - 56px) / 2)
+		}
 
-        .center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            width: 100%;
-        }
+		.nopointer {
+			pointer-events: none
+		}
 
-        .y-100 {
-            transform: translateY(-100%);
-        }
+		.fill {
+			width: 100%;
+			height: 100%;
+		}
 
-        input {
-            opacity: 0;
-            user-select: none;
-        }
+		.center {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			width: 100%;
+		}
 
-        /*
-        a {
-            color: blue;
-        }
+		.y-100 {
+			transform: translateY(-100%);
+		}
 
-        a:hover {
-            color: royalblue;
-        }
-
-        a:active {
-            color: dodgerblue;
-        }*/
-    </style>
+		input {
+			opacity: 0;
+			user-select: none;
+		}
+	</style>
 </head>
 
-<body style="margin:8px">
-    <div class="div d">
-        <table class="fill" style="text-align:center;font-size:2em;word-break:break-all">
-            <tbody>
-                <tr>
-                    <td>
-                        <p id="filename" style="text-decoration:underline;margin:16px;"></p>
-                        <noscript>Enable Javascript</noscript>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <input type="file" id="file" class="fill y-100" style="cursor:pointer">
-    </div>
-    <div style="height:20px"></div>
-    <div class="div d">
-        <table class="fill" style="text-align:center;word-break:break-all">
-            <tbody>
-                <tr>
-                    <td>
-                        <progress id="progress" value="0" hidden style="width:32ch"></progress>
-                        <span id="crc32">Result</span>
-                        <button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#crc32">
-                            <img alt="Copy" src="content_copy.svg" id="copyImg">
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="height:20px;white-space:nowrap;text-align:center;font-size:18px;max-width:100%">
-        <div style="overflow-x:auto">
-            <a href="/list.html">Tools</a>
-            |
-            <a href="https://github.com/js-org/js.org"
-                data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
-            |
-            <a href="https://github.com/alexgorbatchev/node-crc"
-                data-goatcounter-click="https://github.com/alexgorbatchev/node-crc">NODE-CRC</a>
-            |
-            <a href="https://github.com/zenorocha/clipboard.js"
-                data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
-            <img hidden src="content_copy.svg">
-            <img hidden src="done.svg">
-        </div>
-    </div>
-    <script>"use strict";
-        // https://github.com/alexgorbatchev/node-crc
-        // Object.defineProperty(exports, "__esModule", { value: true });
-        // Generated by `./pycrc.py --algorithm=table-driven --model=crc-32 --generate=c`
-        let TABLE = [
-            0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
-            0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91,
-            0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7,
-            0x136c9856, 0x646ba8c0, 0xfd62f97a, 0x8a65c9ec, 0x14015c4f, 0x63066cd9, 0xfa0f3d63, 0x8d080df5,
-            0x3b6e20c8, 0x4c69105e, 0xd56041e4, 0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd, 0xa50ab56b,
-            0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940, 0x32d86ce3, 0x45df5c75, 0xdcd60dcf, 0xabd13d59,
-            0x26d930ac, 0x51de003a, 0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423, 0xcfba9599, 0xb8bda50f,
-            0x2802b89e, 0x5f058808, 0xc60cd9b2, 0xb10be924, 0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d,
-            0x76dc4190, 0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589, 0x06b6b51f, 0x9fbfe4a5, 0xe8b8d433,
-            0x7807c9a2, 0x0f00f934, 0x9609a88e, 0xe10e9818, 0x7f6a0dbb, 0x086d3d2d, 0x91646c97, 0xe6635c01,
-            0x6b6b51f4, 0x1c6c6162, 0x856530d8, 0xf262004e, 0x6c0695ed, 0x1b01a57b, 0x8208f4c1, 0xf50fc457,
-            0x65b0d9c6, 0x12b7e950, 0x8bbeb8ea, 0xfcb9887c, 0x62dd1ddf, 0x15da2d49, 0x8cd37cf3, 0xfbd44c65,
-            0x4db26158, 0x3ab551ce, 0xa3bc0074, 0xd4bb30e2, 0x4adfa541, 0x3dd895d7, 0xa4d1c46d, 0xd3d6f4fb,
-            0x4369e96a, 0x346ed9fc, 0xad678846, 0xda60b8d0, 0x44042d73, 0x33031de5, 0xaa0a4c5f, 0xdd0d7cc9,
-            0x5005713c, 0x270241aa, 0xbe0b1010, 0xc90c2086, 0x5768b525, 0x206f85b3, 0xb966d409, 0xce61e49f,
-            0x5edef90e, 0x29d9c998, 0xb0d09822, 0xc7d7a8b4, 0x59b33d17, 0x2eb40d81, 0xb7bd5c3b, 0xc0ba6cad,
-            0xedb88320, 0x9abfb3b6, 0x03b6e20c, 0x74b1d29a, 0xead54739, 0x9dd277af, 0x04db2615, 0x73dc1683,
-            0xe3630b12, 0x94643b84, 0x0d6d6a3e, 0x7a6a5aa8, 0xe40ecf0b, 0x9309ff9d, 0x0a00ae27, 0x7d079eb1,
-            0xf00f9344, 0x8708a3d2, 0x1e01f268, 0x6906c2fe, 0xf762575d, 0x806567cb, 0x196c3671, 0x6e6b06e7,
-            0xfed41b76, 0x89d32be0, 0x10da7a5a, 0x67dd4acc, 0xf9b9df6f, 0x8ebeeff9, 0x17b7be43, 0x60b08ed5,
-            0xd6d6a3e8, 0xa1d1937e, 0x38d8c2c4, 0x4fdff252, 0xd1bb67f1, 0xa6bc5767, 0x3fb506dd, 0x48b2364b,
-            0xd80d2bda, 0xaf0a1b4c, 0x36034af6, 0x41047a60, 0xdf60efc3, 0xa867df55, 0x316e8eef, 0x4669be79,
-            0xcb61b38c, 0xbc66831a, 0x256fd2a0, 0x5268e236, 0xcc0c7795, 0xbb0b4703, 0x220216b9, 0x5505262f,
-            0xc5ba3bbe, 0xb2bd0b28, 0x2bb45a92, 0x5cb36a04, 0xc2d7ffa7, 0xb5d0cf31, 0x2cd99e8b, 0x5bdeae1d,
-            0x9b64c2b0, 0xec63f226, 0x756aa39c, 0x026d930a, 0x9c0906a9, 0xeb0e363f, 0x72076785, 0x05005713,
-            0x95bf4a82, 0xe2b87a14, 0x7bb12bae, 0x0cb61b38, 0x92d28e9b, 0xe5d5be0d, 0x7cdcefb7, 0x0bdbdf21,
-            0x86d3d2d4, 0xf1d4e242, 0x68ddb3f8, 0x1fda836e, 0x81be16cd, 0xf6b9265b, 0x6fb077e1, 0x18b74777,
-            0x88085ae6, 0xff0f6a70, 0x66063bca, 0x11010b5c, 0x8f659eff, 0xf862ae69, 0x616bffd3, 0x166ccf45,
-            0xa00ae278, 0xd70dd2ee, 0x4e048354, 0x3903b3c2, 0xa7672661, 0xd06016f7, 0x4969474d, 0x3e6e77db,
-            0xaed16a4a, 0xd9d65adc, 0x40df0b66, 0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
-            0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
-            0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
-        ];
-        if (typeof Int32Array !== 'undefined') {
-            TABLE = new Int32Array(TABLE);
-        }
-        const crc32 = (current, previous) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            let crc = previous === 0 ? 0 : ~~previous ^ -1;
-            for (let index = 0; index < current.length; index++) {
-                crc = TABLE[(crc ^ current[index]) & 0xff] ^ (crc >>> 8);
-            }
-            return crc ^ -1;
-        };
-        window.crc32 = crc32;
-    </script>
-    <script>
-        var tip = "",
-            filename = document.querySelector("#filename"),
-            copy = document.querySelector("#copy"),
-            copyImg = document.querySelector("#copyImg");
-        document.getElementById('file').addEventListener('change', function () {
-            (function (e) {
-                var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-                    file = e.files[0],
-                    chunkSize = 8388608,
-                    chunks = Math.ceil(file.size / chunkSize),
-                    currentChunk = 0,
-                    spark = null,
-                    fileReader = new FileReader(),
-                    progress = document.querySelector("#progress"),
-                    c32 = document.querySelector("#crc32"),
-                    time = new Date().getTime(),
-                    time2 = time;
-                tip = false;
-                showTips();
-                hideIcon();
-                console.log(file);
-                fileElement = e;
-                filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
-                progress.hidden = false;
-                fileElement.hidden = true;
-                c32.textContent = "";
-                c32.hidden = !true;
-                copy.hidden = true;
-                fileReader.onload = function (e) {
-                    console.log("read chunk nr", currentChunk + 1, "of", chunks);
-                    spark = window.crc32(new Uint8Array(e.target.result), spark)
-                    currentChunk++;
-                    if (currentChunk < chunks) {
-                        loadNext()
-                    } else {
-                        progress.value = chunks;
-                        progress.hidden = true;
-                        fileElement.hidden = false;
-                        time = new Date().getTime() - time;
-                        console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
-                        console.info("computed hash", spark);
-                        c32.textContent = new Uint32Array([spark])[0].toString(16).padStart(8, "0");
-                        fileElement.value = null;
-                        c32.hidden = false;
-                        copy.hidden = false;
-                    }
-                };
-                fileReader.onerror = function (e) {
-                    console.warn(c32.textContent = e.target.error);
-                    progress.value = chunks;
-                    progress.hidden = true;
-                    fileElement.hidden = false;
-                    fileElement.value = null;
-                    c32.hidden = false;
-                    copy.hidden = true;
-                };
+<body>
+	<div class="div d">
+		<table class="fill" style="text-align:center;font-size:2em;word-break:break-all">
+			<tbody>
+				<tr>
+					<td>
+						<p id="filename" style="text-decoration:underline;margin:16px;"></p>
+						<noscript>Enable Javascript</noscript>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<input type="file" id="file" class="fill y-100" style="cursor:pointer">
+	</div>
+	<div style="height:20px"></div>
+	<div class="div d">
+		<table class="fill" style="text-align:center;word-break:break-all">
+			<tbody>
+				<tr>
+					<td>
+						<progress id="progress" value="0" hidden style="width:32ch"></progress>
+						<span id="crc32">Files are processed locally</span>
+						<button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#crc32">
+							<img alt="Copy" src="content_copy.svg" id="copyImg">
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div style="height:20px;white-space:nowrap;text-align:center;font-size:18px;max-width:100%">
+		<div style="overflow-x:auto">
+			<a href="/list.html">Hash Tools</a>
+			|
+			<a href="https://github.com/js-org/js.org"
+				data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
+			|
+			<a href="https://github.com/alexgorbatchev/node-crc"
+				data-goatcounter-click="https://github.com/alexgorbatchev/node-crc">NODE-CRC</a>
+			|
+			<a href="https://github.com/zenorocha/clipboard.js"
+				data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
+			<img hidden src="content_copy.svg">
+			<img hidden src="done.svg">
+		</div>
+	</div>
+	<script>"use strict";
+		// https://github.com/alexgorbatchev/node-crc
+		// Object.defineProperty(exports, "__esModule", { value: true });
+		// Generated by `./pycrc.py --algorithm=table-driven --model=crc-32 --generate=c`
+		let TABLE = [
+			0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
+			0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91,
+			0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7,
+			0x136c9856, 0x646ba8c0, 0xfd62f97a, 0x8a65c9ec, 0x14015c4f, 0x63066cd9, 0xfa0f3d63, 0x8d080df5,
+			0x3b6e20c8, 0x4c69105e, 0xd56041e4, 0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd, 0xa50ab56b,
+			0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940, 0x32d86ce3, 0x45df5c75, 0xdcd60dcf, 0xabd13d59,
+			0x26d930ac, 0x51de003a, 0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423, 0xcfba9599, 0xb8bda50f,
+			0x2802b89e, 0x5f058808, 0xc60cd9b2, 0xb10be924, 0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d,
+			0x76dc4190, 0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589, 0x06b6b51f, 0x9fbfe4a5, 0xe8b8d433,
+			0x7807c9a2, 0x0f00f934, 0x9609a88e, 0xe10e9818, 0x7f6a0dbb, 0x086d3d2d, 0x91646c97, 0xe6635c01,
+			0x6b6b51f4, 0x1c6c6162, 0x856530d8, 0xf262004e, 0x6c0695ed, 0x1b01a57b, 0x8208f4c1, 0xf50fc457,
+			0x65b0d9c6, 0x12b7e950, 0x8bbeb8ea, 0xfcb9887c, 0x62dd1ddf, 0x15da2d49, 0x8cd37cf3, 0xfbd44c65,
+			0x4db26158, 0x3ab551ce, 0xa3bc0074, 0xd4bb30e2, 0x4adfa541, 0x3dd895d7, 0xa4d1c46d, 0xd3d6f4fb,
+			0x4369e96a, 0x346ed9fc, 0xad678846, 0xda60b8d0, 0x44042d73, 0x33031de5, 0xaa0a4c5f, 0xdd0d7cc9,
+			0x5005713c, 0x270241aa, 0xbe0b1010, 0xc90c2086, 0x5768b525, 0x206f85b3, 0xb966d409, 0xce61e49f,
+			0x5edef90e, 0x29d9c998, 0xb0d09822, 0xc7d7a8b4, 0x59b33d17, 0x2eb40d81, 0xb7bd5c3b, 0xc0ba6cad,
+			0xedb88320, 0x9abfb3b6, 0x03b6e20c, 0x74b1d29a, 0xead54739, 0x9dd277af, 0x04db2615, 0x73dc1683,
+			0xe3630b12, 0x94643b84, 0x0d6d6a3e, 0x7a6a5aa8, 0xe40ecf0b, 0x9309ff9d, 0x0a00ae27, 0x7d079eb1,
+			0xf00f9344, 0x8708a3d2, 0x1e01f268, 0x6906c2fe, 0xf762575d, 0x806567cb, 0x196c3671, 0x6e6b06e7,
+			0xfed41b76, 0x89d32be0, 0x10da7a5a, 0x67dd4acc, 0xf9b9df6f, 0x8ebeeff9, 0x17b7be43, 0x60b08ed5,
+			0xd6d6a3e8, 0xa1d1937e, 0x38d8c2c4, 0x4fdff252, 0xd1bb67f1, 0xa6bc5767, 0x3fb506dd, 0x48b2364b,
+			0xd80d2bda, 0xaf0a1b4c, 0x36034af6, 0x41047a60, 0xdf60efc3, 0xa867df55, 0x316e8eef, 0x4669be79,
+			0xcb61b38c, 0xbc66831a, 0x256fd2a0, 0x5268e236, 0xcc0c7795, 0xbb0b4703, 0x220216b9, 0x5505262f,
+			0xc5ba3bbe, 0xb2bd0b28, 0x2bb45a92, 0x5cb36a04, 0xc2d7ffa7, 0xb5d0cf31, 0x2cd99e8b, 0x5bdeae1d,
+			0x9b64c2b0, 0xec63f226, 0x756aa39c, 0x026d930a, 0x9c0906a9, 0xeb0e363f, 0x72076785, 0x05005713,
+			0x95bf4a82, 0xe2b87a14, 0x7bb12bae, 0x0cb61b38, 0x92d28e9b, 0xe5d5be0d, 0x7cdcefb7, 0x0bdbdf21,
+			0x86d3d2d4, 0xf1d4e242, 0x68ddb3f8, 0x1fda836e, 0x81be16cd, 0xf6b9265b, 0x6fb077e1, 0x18b74777,
+			0x88085ae6, 0xff0f6a70, 0x66063bca, 0x11010b5c, 0x8f659eff, 0xf862ae69, 0x616bffd3, 0x166ccf45,
+			0xa00ae278, 0xd70dd2ee, 0x4e048354, 0x3903b3c2, 0xa7672661, 0xd06016f7, 0x4969474d, 0x3e6e77db,
+			0xaed16a4a, 0xd9d65adc, 0x40df0b66, 0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
+			0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
+			0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
+		];
+		if (typeof Int32Array !== 'undefined') {
+			TABLE = new Int32Array(TABLE);
+		}
+		const crc32 = (current, previous) => {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			let crc = previous === 0 ? 0 : ~~previous ^ -1;
+			for (let index = 0; index < current.length; index++) {
+				crc = TABLE[(crc ^ current[index]) & 0xff] ^ (crc >>> 8);
+			}
+			return crc ^ -1;
+		};
+		window.crc32 = crc32;
+	</script>
+	<script>
+		var tip = "",
+			filename = document.querySelector("#filename"),
+			copy = document.querySelector("#copy"),
+			copyImg = document.querySelector("#copyImg");
+		document.getElementById('file').addEventListener('change', function () {
+			(function (e) {
+				var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+					file = e.files[0],
+					chunkSize = 8388608,
+					chunks = Math.ceil(file.size / chunkSize),
+					currentChunk = 0,
+					spark = null,
+					fileReader = new FileReader(),
+					progress = document.querySelector("#progress"),
+					c32 = document.querySelector("#crc32"),
+					time = new Date().getTime(),
+					time2 = time;
+				tip = false;
+				showTips();
+				hideIcon();
+				console.log(file);
+				fileElement = e;
+				filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
+				progress.hidden = false;
+				fileElement.hidden = true;
+				c32.textContent = "";
+				c32.hidden = !true;
+				copy.hidden = true;
+				fileReader.onload = function (e) {
+					console.log("read chunk nr", currentChunk + 1, "of", chunks);
+					spark = window.crc32(new Uint8Array(e.target.result), spark)
+					currentChunk++;
+					if (currentChunk < chunks) {
+						loadNext()
+					} else {
+						progress.value = chunks;
+						progress.hidden = true;
+						fileElement.hidden = false;
+						time = new Date().getTime() - time;
+						console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
+						console.info("computed hash", spark);
+						c32.textContent = new Uint32Array([spark])[0].toString(16).padStart(8, "0");
+						fileElement.value = null;
+						c32.hidden = false;
+						copy.hidden = false;
+					}
+				};
+				fileReader.onerror = function (e) {
+					console.warn(c32.textContent = e.target.error);
+					progress.value = chunks;
+					progress.hidden = true;
+					fileElement.hidden = false;
+					fileElement.value = null;
+					c32.hidden = false;
+					copy.hidden = true;
+				};
 
-                function loadNext() {
-                    var t = new Date().getTime();
-                    if (currentChunk > 0)
-                        c32.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
-                    time2 = t;
-                    progress.value = currentChunk;
-                    progress.max = chunks;
-                    var start = currentChunk * chunkSize,
-                        end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
-                    fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
-                }
-                loadNext();
-            })(this);
-        });
-        function showTips() {
-            if (tip !== false) {
-                if (tip == "Drag a file here") {
-                    tip = "Click to select file";
-                } else {
-                    tip = "Drag a file here";
-                }
-                filename.textContent = tip;
-            } else {
-                filename.style.textDecoration = null;
-            }
-        }
-        setInterval(showTips, 2000);
-        showTips();
-        if (!location.toString().startsWith("file:")) {
-            s = document.createElement("script");
-            s.src = "/track.js";
-            s.setAttribute("defer", "");
-            s.setAttribute("async", "");
-            document.head.appendChild(s);
-        }
-        function copied() {
-            setTimeout(hideIcon, 1000);
-            copyImg.src = "done.svg";
-        }
-        function hideIcon() {
-            copyImg.src = "content_copy.svg";
-        }
-    </script>
-    <script>/* clipboard.js v2.0.6 https://clipboardjs.com/ Licensed MIT © Zeno Rocha */!function (t, e) { "object" == typeof exports && "object" == typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define([], e) : "object" == typeof exports ? exports.ClipboardJS = e() : t.ClipboardJS = e() }(this, function () { return o = {}, r.m = n = [function (t, e) { t.exports = function (t) { var e; if ("SELECT" === t.nodeName) t.focus(), e = t.value; else if ("INPUT" === t.nodeName || "TEXTAREA" === t.nodeName) { var n = t.hasAttribute("readonly"); n || t.setAttribute("readonly", ""), t.select(), t.setSelectionRange(0, t.value.length), n || t.removeAttribute("readonly"), e = t.value } else { t.hasAttribute("contenteditable") && t.focus(); var o = window.getSelection(), r = document.createRange(); r.selectNodeContents(t), o.removeAllRanges(), o.addRange(r), e = o.toString() } return e } }, function (t, e) { function n() { } n.prototype = { on: function (t, e, n) { var o = this.e || (this.e = {}); return (o[t] || (o[t] = [])).push({ fn: e, ctx: n }), this }, once: function (t, e, n) { var o = this; function r() { o.off(t, r), e.apply(n, arguments) } return r._ = e, this.on(t, r, n) }, emit: function (t) { for (var e = [].slice.call(arguments, 1), n = ((this.e || (this.e = {}))[t] || []).slice(), o = 0, r = n.length; o < r; o++)n[o].fn.apply(n[o].ctx, e); return this }, off: function (t, e) { var n = this.e || (this.e = {}), o = n[t], r = []; if (o && e) for (var i = 0, a = o.length; i < a; i++)o[i].fn !== e && o[i].fn._ !== e && r.push(o[i]); return r.length ? n[t] = r : delete n[t], this } }, t.exports = n, t.exports.TinyEmitter = n }, function (t, e, n) { var d = n(3), h = n(4); t.exports = function (t, e, n) { if (!t && !e && !n) throw new Error("Missing required arguments"); if (!d.string(e)) throw new TypeError("Second argument must be a String"); if (!d.fn(n)) throw new TypeError("Third argument must be a Function"); if (d.node(t)) return s = e, f = n, (u = t).addEventListener(s, f), { destroy: function () { u.removeEventListener(s, f) } }; if (d.nodeList(t)) return a = t, c = e, l = n, Array.prototype.forEach.call(a, function (t) { t.addEventListener(c, l) }), { destroy: function () { Array.prototype.forEach.call(a, function (t) { t.removeEventListener(c, l) }) } }; if (d.string(t)) return o = t, r = e, i = n, h(document.body, o, r, i); throw new TypeError("First argument must be a String, HTMLElement, HTMLCollection, or NodeList"); var o, r, i, a, c, l, u, s, f } }, function (t, n) { n.node = function (t) { return void 0 !== t && t instanceof HTMLElement && 1 === t.nodeType }, n.nodeList = function (t) { var e = Object.prototype.toString.call(t); return void 0 !== t && ("[object NodeList]" === e || "[object HTMLCollection]" === e) && "length" in t && (0 === t.length || n.node(t[0])) }, n.string = function (t) { return "string" == typeof t || t instanceof String }, n.fn = function (t) { return "[object Function]" === Object.prototype.toString.call(t) } }, function (t, e, n) { var a = n(5); function i(t, e, n, o, r) { var i = function (e, n, t, o) { return function (t) { t.delegateTarget = a(t.target, n), t.delegateTarget && o.call(e, t) } }.apply(this, arguments); return t.addEventListener(n, i, r), { destroy: function () { t.removeEventListener(n, i, r) } } } t.exports = function (t, e, n, o, r) { return "function" == typeof t.addEventListener ? i.apply(null, arguments) : "function" == typeof n ? i.bind(null, document).apply(null, arguments) : ("string" == typeof t && (t = document.querySelectorAll(t)), Array.prototype.map.call(t, function (t) { return i(t, e, n, o, r) })) } }, function (t, e) { if ("undefined" != typeof Element && !Element.prototype.matches) { var n = Element.prototype; n.matches = n.matchesSelector || n.mozMatchesSelector || n.msMatchesSelector || n.oMatchesSelector || n.webkitMatchesSelector } t.exports = function (t, e) { for (; t && 9 !== t.nodeType;) { if ("function" == typeof t.matches && t.matches(e)) return t; t = t.parentNode } } }, function (t, e, n) { "use strict"; n.r(e); var o = n(0), r = n.n(o), i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }; function a(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } function c(t) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, c), this.resolveOptions(t), this.initSelection() } var l = (function (t, e, n) { return e && a(t.prototype, e), n && a(t, n), t }(c, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = e.action, this.container = e.container, this.emitter = e.emitter, this.target = e.target, this.text = e.text, this.trigger = e.trigger, this.selectedText = "" } }, { key: "initSelection", value: function () { this.text ? this.selectFake() : this.target && this.selectTarget() } }, { key: "selectFake", value: function () { var t = this, e = "rtl" == document.documentElement.getAttribute("dir"); this.removeFake(), this.fakeHandlerCallback = function () { return t.removeFake() }, this.fakeHandler = this.container.addEventListener("click", this.fakeHandlerCallback) || !0, this.fakeElem = document.createElement("textarea"), this.fakeElem.style.fontSize = "12pt", this.fakeElem.style.border = "0", this.fakeElem.style.padding = "0", this.fakeElem.style.margin = "0", this.fakeElem.style.position = "absolute", this.fakeElem.style[e ? "right" : "left"] = "-9999px"; var n = window.pageYOffset || document.documentElement.scrollTop; this.fakeElem.style.top = n + "px", this.fakeElem.setAttribute("readonly", ""), this.fakeElem.value = this.text, this.container.appendChild(this.fakeElem), this.selectedText = r()(this.fakeElem), this.copyText() } }, { key: "removeFake", value: function () { this.fakeHandler && (this.container.removeEventListener("click", this.fakeHandlerCallback), this.fakeHandler = null, this.fakeHandlerCallback = null), this.fakeElem && (this.container.removeChild(this.fakeElem), this.fakeElem = null) } }, { key: "selectTarget", value: function () { this.selectedText = r()(this.target), this.copyText() } }, { key: "copyText", value: function () { var e = void 0; try { e = document.execCommand(this.action) } catch (t) { e = !1 } this.handleResult(e) } }, { key: "handleResult", value: function (t) { this.emitter.emit(t ? "success" : "error", { action: this.action, text: this.selectedText, trigger: this.trigger, clearSelection: this.clearSelection.bind(this) }) } }, { key: "clearSelection", value: function () { this.trigger && this.trigger.focus(), document.activeElement.blur(), window.getSelection().removeAllRanges() } }, { key: "destroy", value: function () { this.removeFake() } }, { key: "action", set: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : "copy"; if (this._action = e, "copy" !== this._action && "cut" !== this._action) throw new Error('Invalid "action" value, use either "copy" or "cut"') }, get: function () { return this._action } }, { key: "target", set: function (t) { if (void 0 !== t) { if (!t || "object" !== (void 0 === t ? "undefined" : i(t)) || 1 !== t.nodeType) throw new Error('Invalid "target" value, use a valid Element'); if ("copy" === this.action && t.hasAttribute("disabled")) throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute'); if ("cut" === this.action && (t.hasAttribute("readonly") || t.hasAttribute("disabled"))) throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes'); this._target = t } }, get: function () { return this._target } }]), c), u = n(1), s = n.n(u), f = n(2), d = n.n(f), h = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }, p = function (t, e, n) { return e && y(t.prototype, e), n && y(t, n), t }; function y(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } var m = (function (t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e) }(v, s.a), p(v, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = "function" == typeof e.action ? e.action : this.defaultAction, this.target = "function" == typeof e.target ? e.target : this.defaultTarget, this.text = "function" == typeof e.text ? e.text : this.defaultText, this.container = "object" === h(e.container) ? e.container : document.body } }, { key: "listenClick", value: function (t) { var e = this; this.listener = d()(t, "click", function (t) { return e.onClick(t) }) } }, { key: "onClick", value: function (t) { var e = t.delegateTarget || t.currentTarget; this.clipboardAction && (this.clipboardAction = null), this.clipboardAction = new l({ action: this.action(e), target: this.target(e), text: this.text(e), container: this.container, trigger: e, emitter: this }) } }, { key: "defaultAction", value: function (t) { return b("action", t) } }, { key: "defaultTarget", value: function (t) { var e = b("target", t); if (e) return document.querySelector(e) } }, { key: "defaultText", value: function (t) { return b("text", t) } }, { key: "destroy", value: function () { this.listener.destroy(), this.clipboardAction && (this.clipboardAction.destroy(), this.clipboardAction = null) } }], [{ key: "isSupported", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : ["copy", "cut"], n = "string" == typeof e ? [e] : e, o = !!document.queryCommandSupported; return n.forEach(function (t) { o = o && !!document.queryCommandSupported(t) }), o } }]), v); function v(t, e) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, v); var n = function (t, e) { if (!t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return !e || "object" != typeof e && "function" != typeof e ? t : e }(this, (v.__proto__ || Object.getPrototypeOf(v)).call(this)); return n.resolveOptions(e), n.listenClick(t), n } function b(t, e) { var n = "data-clipboard-" + t; if (e.hasAttribute(n)) return e.getAttribute(n) } e.default = m }], r.c = o, r.d = function (t, e, n) { r.o(t, e) || Object.defineProperty(t, e, { enumerable: !0, get: n }) }, r.r = function (t) { "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(t, "__esModule", { value: !0 }) }, r.t = function (e, t) { if (1 & t && (e = r(e)), 8 & t) return e; if (4 & t && "object" == typeof e && e && e.__esModule) return e; var n = Object.create(null); if (r.r(n), Object.defineProperty(n, "default", { enumerable: !0, value: e }), 2 & t && "string" != typeof e) for (var o in e) r.d(n, o, function (t) { return e[t] }.bind(null, o)); return n }, r.n = function (t) { var e = t && t.__esModule ? function () { return t.default } : function () { return t }; return r.d(e, "a", e), e }, r.o = function (t, e) { return Object.prototype.hasOwnProperty.call(t, e) }, r.p = "", r(r.s = 6).default; function r(t) { if (o[t]) return o[t].exports; var e = o[t] = { i: t, l: !1, exports: {} }; return n[t].call(e.exports, e, e.exports, r), e.l = !0, e.exports } var n, o });</script>
-    <script>new ClipboardJS("#copy").on("success", copied)</script>
+				function loadNext() {
+					var t = new Date().getTime();
+					if (currentChunk > 0)
+						c32.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+					time2 = t;
+					progress.value = currentChunk;
+					progress.max = chunks;
+					var start = currentChunk * chunkSize,
+						end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+					fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
+				}
+				loadNext();
+			})(this);
+		});
+		function showTips() {
+			if (tip !== false) {
+				if (tip == "Drag a file here") {
+					tip = "Click to select file";
+				} else {
+					tip = "Drag a file here";
+				}
+				filename.textContent = tip;
+			} else {
+				filename.style.textDecoration = null;
+			}
+		}
+		setInterval(showTips, 2000);
+		showTips();
+		if (!location.toString().startsWith("file:")) {
+			s = document.createElement("script");
+			s.src = "/track.js";
+			s.setAttribute("defer", "");
+			s.setAttribute("async", "");
+			document.head.appendChild(s);
+		}
+		function copied(e) {
+			setTimeout(hideIcon, 1000, e);
+			copyImg.src = "done.svg";
+		}
+		function hideIcon(e) {
+			copyImg.src = "content_copy.svg";
+			if (e) e.clearSelection();
+		}
+	</script>
+	<script>/* clipboard.js v2.0.6 https://clipboardjs.com/ Licensed MIT © Zeno Rocha */!function (t, e) { "object" == typeof exports && "object" == typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define([], e) : "object" == typeof exports ? exports.ClipboardJS = e() : t.ClipboardJS = e() }(this, function () { return o = {}, r.m = n = [function (t, e) { t.exports = function (t) { var e; if ("SELECT" === t.nodeName) t.focus(), e = t.value; else if ("INPUT" === t.nodeName || "TEXTAREA" === t.nodeName) { var n = t.hasAttribute("readonly"); n || t.setAttribute("readonly", ""), t.select(), t.setSelectionRange(0, t.value.length), n || t.removeAttribute("readonly"), e = t.value } else { t.hasAttribute("contenteditable") && t.focus(); var o = window.getSelection(), r = document.createRange(); r.selectNodeContents(t), o.removeAllRanges(), o.addRange(r), e = o.toString() } return e } }, function (t, e) { function n() { } n.prototype = { on: function (t, e, n) { var o = this.e || (this.e = {}); return (o[t] || (o[t] = [])).push({ fn: e, ctx: n }), this }, once: function (t, e, n) { var o = this; function r() { o.off(t, r), e.apply(n, arguments) } return r._ = e, this.on(t, r, n) }, emit: function (t) { for (var e = [].slice.call(arguments, 1), n = ((this.e || (this.e = {}))[t] || []).slice(), o = 0, r = n.length; o < r; o++)n[o].fn.apply(n[o].ctx, e); return this }, off: function (t, e) { var n = this.e || (this.e = {}), o = n[t], r = []; if (o && e) for (var i = 0, a = o.length; i < a; i++)o[i].fn !== e && o[i].fn._ !== e && r.push(o[i]); return r.length ? n[t] = r : delete n[t], this } }, t.exports = n, t.exports.TinyEmitter = n }, function (t, e, n) { var d = n(3), h = n(4); t.exports = function (t, e, n) { if (!t && !e && !n) throw new Error("Missing required arguments"); if (!d.string(e)) throw new TypeError("Second argument must be a String"); if (!d.fn(n)) throw new TypeError("Third argument must be a Function"); if (d.node(t)) return s = e, f = n, (u = t).addEventListener(s, f), { destroy: function () { u.removeEventListener(s, f) } }; if (d.nodeList(t)) return a = t, c = e, l = n, Array.prototype.forEach.call(a, function (t) { t.addEventListener(c, l) }), { destroy: function () { Array.prototype.forEach.call(a, function (t) { t.removeEventListener(c, l) }) } }; if (d.string(t)) return o = t, r = e, i = n, h(document.body, o, r, i); throw new TypeError("First argument must be a String, HTMLElement, HTMLCollection, or NodeList"); var o, r, i, a, c, l, u, s, f } }, function (t, n) { n.node = function (t) { return void 0 !== t && t instanceof HTMLElement && 1 === t.nodeType }, n.nodeList = function (t) { var e = Object.prototype.toString.call(t); return void 0 !== t && ("[object NodeList]" === e || "[object HTMLCollection]" === e) && "length" in t && (0 === t.length || n.node(t[0])) }, n.string = function (t) { return "string" == typeof t || t instanceof String }, n.fn = function (t) { return "[object Function]" === Object.prototype.toString.call(t) } }, function (t, e, n) { var a = n(5); function i(t, e, n, o, r) { var i = function (e, n, t, o) { return function (t) { t.delegateTarget = a(t.target, n), t.delegateTarget && o.call(e, t) } }.apply(this, arguments); return t.addEventListener(n, i, r), { destroy: function () { t.removeEventListener(n, i, r) } } } t.exports = function (t, e, n, o, r) { return "function" == typeof t.addEventListener ? i.apply(null, arguments) : "function" == typeof n ? i.bind(null, document).apply(null, arguments) : ("string" == typeof t && (t = document.querySelectorAll(t)), Array.prototype.map.call(t, function (t) { return i(t, e, n, o, r) })) } }, function (t, e) { if ("undefined" != typeof Element && !Element.prototype.matches) { var n = Element.prototype; n.matches = n.matchesSelector || n.mozMatchesSelector || n.msMatchesSelector || n.oMatchesSelector || n.webkitMatchesSelector } t.exports = function (t, e) { for (; t && 9 !== t.nodeType;) { if ("function" == typeof t.matches && t.matches(e)) return t; t = t.parentNode } } }, function (t, e, n) { "use strict"; n.r(e); var o = n(0), r = n.n(o), i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }; function a(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } function c(t) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, c), this.resolveOptions(t), this.initSelection() } var l = (function (t, e, n) { return e && a(t.prototype, e), n && a(t, n), t }(c, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = e.action, this.container = e.container, this.emitter = e.emitter, this.target = e.target, this.text = e.text, this.trigger = e.trigger, this.selectedText = "" } }, { key: "initSelection", value: function () { this.text ? this.selectFake() : this.target && this.selectTarget() } }, { key: "selectFake", value: function () { var t = this, e = "rtl" == document.documentElement.getAttribute("dir"); this.removeFake(), this.fakeHandlerCallback = function () { return t.removeFake() }, this.fakeHandler = this.container.addEventListener("click", this.fakeHandlerCallback) || !0, this.fakeElem = document.createElement("textarea"), this.fakeElem.style.fontSize = "12pt", this.fakeElem.style.border = "0", this.fakeElem.style.padding = "0", this.fakeElem.style.margin = "0", this.fakeElem.style.position = "absolute", this.fakeElem.style[e ? "right" : "left"] = "-9999px"; var n = window.pageYOffset || document.documentElement.scrollTop; this.fakeElem.style.top = n + "px", this.fakeElem.setAttribute("readonly", ""), this.fakeElem.value = this.text, this.container.appendChild(this.fakeElem), this.selectedText = r()(this.fakeElem), this.copyText() } }, { key: "removeFake", value: function () { this.fakeHandler && (this.container.removeEventListener("click", this.fakeHandlerCallback), this.fakeHandler = null, this.fakeHandlerCallback = null), this.fakeElem && (this.container.removeChild(this.fakeElem), this.fakeElem = null) } }, { key: "selectTarget", value: function () { this.selectedText = r()(this.target), this.copyText() } }, { key: "copyText", value: function () { var e = void 0; try { e = document.execCommand(this.action) } catch (t) { e = !1 } this.handleResult(e) } }, { key: "handleResult", value: function (t) { this.emitter.emit(t ? "success" : "error", { action: this.action, text: this.selectedText, trigger: this.trigger, clearSelection: this.clearSelection.bind(this) }) } }, { key: "clearSelection", value: function () { this.trigger && this.trigger.focus(), document.activeElement.blur(), window.getSelection().removeAllRanges() } }, { key: "destroy", value: function () { this.removeFake() } }, { key: "action", set: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : "copy"; if (this._action = e, "copy" !== this._action && "cut" !== this._action) throw new Error('Invalid "action" value, use either "copy" or "cut"') }, get: function () { return this._action } }, { key: "target", set: function (t) { if (void 0 !== t) { if (!t || "object" !== (void 0 === t ? "undefined" : i(t)) || 1 !== t.nodeType) throw new Error('Invalid "target" value, use a valid Element'); if ("copy" === this.action && t.hasAttribute("disabled")) throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute'); if ("cut" === this.action && (t.hasAttribute("readonly") || t.hasAttribute("disabled"))) throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes'); this._target = t } }, get: function () { return this._target } }]), c), u = n(1), s = n.n(u), f = n(2), d = n.n(f), h = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }, p = function (t, e, n) { return e && y(t.prototype, e), n && y(t, n), t }; function y(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } var m = (function (t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e) }(v, s.a), p(v, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = "function" == typeof e.action ? e.action : this.defaultAction, this.target = "function" == typeof e.target ? e.target : this.defaultTarget, this.text = "function" == typeof e.text ? e.text : this.defaultText, this.container = "object" === h(e.container) ? e.container : document.body } }, { key: "listenClick", value: function (t) { var e = this; this.listener = d()(t, "click", function (t) { return e.onClick(t) }) } }, { key: "onClick", value: function (t) { var e = t.delegateTarget || t.currentTarget; this.clipboardAction && (this.clipboardAction = null), this.clipboardAction = new l({ action: this.action(e), target: this.target(e), text: this.text(e), container: this.container, trigger: e, emitter: this }) } }, { key: "defaultAction", value: function (t) { return b("action", t) } }, { key: "defaultTarget", value: function (t) { var e = b("target", t); if (e) return document.querySelector(e) } }, { key: "defaultText", value: function (t) { return b("text", t) } }, { key: "destroy", value: function () { this.listener.destroy(), this.clipboardAction && (this.clipboardAction.destroy(), this.clipboardAction = null) } }], [{ key: "isSupported", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : ["copy", "cut"], n = "string" == typeof e ? [e] : e, o = !!document.queryCommandSupported; return n.forEach(function (t) { o = o && !!document.queryCommandSupported(t) }), o } }]), v); function v(t, e) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, v); var n = function (t, e) { if (!t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return !e || "object" != typeof e && "function" != typeof e ? t : e }(this, (v.__proto__ || Object.getPrototypeOf(v)).call(this)); return n.resolveOptions(e), n.listenClick(t), n } function b(t, e) { var n = "data-clipboard-" + t; if (e.hasAttribute(n)) return e.getAttribute(n) } e.default = m }], r.c = o, r.d = function (t, e, n) { r.o(t, e) || Object.defineProperty(t, e, { enumerable: !0, get: n }) }, r.r = function (t) { "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(t, "__esModule", { value: !0 }) }, r.t = function (e, t) { if (1 & t && (e = r(e)), 8 & t) return e; if (4 & t && "object" == typeof e && e && e.__esModule) return e; var n = Object.create(null); if (r.r(n), Object.defineProperty(n, "default", { enumerable: !0, value: e }), 2 & t && "string" != typeof e) for (var o in e) r.d(n, o, function (t) { return e[t] }.bind(null, o)); return n }, r.n = function (t) { var e = t && t.__esModule ? function () { return t.default } : function () { return t }; return r.d(e, "a", e), e }, r.o = function (t, e) { return Object.prototype.hasOwnProperty.call(t, e) }, r.p = "", r(r.s = 6).default; function r(t) { if (o[t]) return o[t].exports; var e = o[t] = { i: t, l: !1, exports: {} }; return n[t].call(e.exports, e, e.exports, r), e.l = !0, e.exports } var n, o }); new ClipboardJS("#copy").on("success", copied)</script>
 </body>
 
 </html>

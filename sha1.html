@@ -1,235 +1,233 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Get SHA1</title>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <meta name="description" content="Online SHA1 hash calculator">
-    <meta name="keywords" content="sha1,hash,calculator">
-    <link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
-    <link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
-    <!--
-    <link rel="preload" href="content_copy.svg" as="image">
-    -->
-    <link rel="preload" href="done.svg" as="image">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        .div {
-            border: 1px solid#ccc;
-            border-radius: 3em;
-            box-sizing: border-box
-        }
+	<meta charset="utf-8">
+	<title>Get SHA1</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<meta name="description" content="Online SHA1 hash calculator">
+	<meta name="keywords" content="sha1,hash,calculator">
+	<link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
+	<link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
+	<!--
+	<link rel="preload" href="content_copy.svg" as="image">
+	-->
+	<link rel="preload" href="done.svg" as="image">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<style>
+		html {
+			height: 100%;
+		}
 
-        .div:hover {
-            border-color: #999
-        }
+		body {
+			margin: 8px;
+			height: 100%;
+			overflow: hidden;
+		}
 
-        .d {
-            width: 100%;
-            height: calc((100% - 40px)/2)
-        }
+		.div {
+			border: 1px solid#ccc;
+			border-radius: 3em;
+			box-sizing: border-box
+		}
 
-        .nopointer {
-            pointer-events: none
-        }
+		.div:hover {
+			border-color: #999
+		}
 
-        .fill {
-            width: 100%;
-            height: 100%;
-        }
+		.d {
+			width: 100%;
+			height: calc((100% - 56px) / 2)
+		}
 
-        .center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            width: 100%;
-        }
+		.nopointer {
+			pointer-events: none
+		}
 
-        .y-100 {
-            transform: translateY(-100%);
-        }
+		.fill {
+			width: 100%;
+			height: 100%;
+		}
 
-        input {
-            opacity: 0;
-            user-select: none;
-        }
+		.center {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			width: 100%;
+		}
 
-        /*
-        a {
-            color: blue;
-        }
+		.y-100 {
+			transform: translateY(-100%);
+		}
 
-        a:hover {
-            color: royalblue;
-        }
-
-        a:active {
-            color: dodgerblue;
-        }*/
-    </style>
+		input {
+			opacity: 0;
+			user-select: none;
+		}
+	</style>
 </head>
 
-<body style="margin:8px">
-    <div class="div d">
-        <table class="fill" style="text-align:center;font-size:2em;word-break:break-all">
-            <tbody>
-                <tr>
-                    <td>
-                        <p id="filename" style="text-decoration:underline;margin:16px;"></p>
-                        <noscript>Enable Javascript</noscript>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <input type="file" id="file" class="fill y-100" style="cursor:pointer">
-    </div>
-    <div style="height:20px"></div>
-    <div class="div d">
-        <table class="fill" style="text-align:center;word-break:break-all">
-            <tbody>
-                <tr>
-                    <td>
-                        <progress id="progress" value="0" hidden style="width:32ch"></progress>
-                        <span id="sha1">Result</span>
-                        <button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#sha1">
-                            <img alt="Copy" src="content_copy.svg" id="copyImg">
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="height:20px;white-space:nowrap;text-align:center;font-size:18px;max-width:100%">
-        <div style="overflow-x:auto">
-            <a href="/list.html">Tools</a>
-            |
-            <a href="https://github.com/js-org/js.org"
-                data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
-            |
-            <a href="https://github.com/emn178/js-sha1"
-                data-goatcounter-click="https://github.com/emn178/js-sha1">JS-SHA1</a>
-            |
-            <a href="https://github.com/zenorocha/clipboard.js"
-                data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
-            <img hidden src="content_copy.svg">
-            <img hidden src="done.svg">
-        </div>
-    </div>
-    <script>
-        /*
-         * [js-sha1]{@link https://github.com/emn178/js-sha1}
-         *
-         * @version 0.6.0
-         * @author Chen, Yi-Cyuan [emn178@gmail.com]
-         * @copyright Chen, Yi-Cyuan 2014-2017
-         * @license MIT
-         */
-        !function () { "use strict"; function t(t) { t ? (f[0] = f[16] = f[1] = f[2] = f[3] = f[4] = f[5] = f[6] = f[7] = f[8] = f[9] = f[10] = f[11] = f[12] = f[13] = f[14] = f[15] = 0, this.blocks = f) : this.blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], this.h0 = 1732584193, this.h1 = 4023233417, this.h2 = 2562383102, this.h3 = 271733878, this.h4 = 3285377520, this.block = this.start = this.bytes = this.hBytes = 0, this.finalized = this.hashed = !1, this.first = !0 } var h = "object" == typeof window ? window : {}, s = !h.JS_SHA1_NO_NODE_JS && "object" == typeof process && process.versions && process.versions.node; s && (h = global); var i = !h.JS_SHA1_NO_COMMON_JS && "object" == typeof module && module.exports, e = "function" == typeof define && define.amd, r = "0123456789abcdef".split(""), o = [-2147483648, 8388608, 32768, 128], n = [24, 16, 8, 0], a = ["hex", "array", "digest", "arrayBuffer"], f = [], u = function (h) { return function (s) { return new t(!0).update(s)[h]() } }, c = function () { var h = u("hex"); s && (h = p(h)), h.create = function () { return new t }, h.update = function (t) { return h.create().update(t) }; for (var i = 0; i < a.length; ++i) { var e = a[i]; h[e] = u(e) } return h }, p = function (t) { var h = eval("require('crypto')"), s = eval("require('buffer').Buffer"), i = function (i) { if ("string" == typeof i) return h.createHash("sha1").update(i, "utf8").digest("hex"); if (i.constructor === ArrayBuffer) i = new Uint8Array(i); else if (void 0 === i.length) return t(i); return h.createHash("sha1").update(new s(i)).digest("hex") }; return i }; t.prototype.update = function (t) { if (!this.finalized) { var s = "string" != typeof t; s && t.constructor === h.ArrayBuffer && (t = new Uint8Array(t)); for (var i, e, r = 0, o = t.length || 0, a = this.blocks; r < o;) { if (this.hashed && (this.hashed = !1, a[0] = this.block, a[16] = a[1] = a[2] = a[3] = a[4] = a[5] = a[6] = a[7] = a[8] = a[9] = a[10] = a[11] = a[12] = a[13] = a[14] = a[15] = 0), s) for (e = this.start; r < o && e < 64; ++r)a[e >> 2] |= t[r] << n[3 & e++]; else for (e = this.start; r < o && e < 64; ++r)(i = t.charCodeAt(r)) < 128 ? a[e >> 2] |= i << n[3 & e++] : i < 2048 ? (a[e >> 2] |= (192 | i >> 6) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]) : i < 55296 || i >= 57344 ? (a[e >> 2] |= (224 | i >> 12) << n[3 & e++], a[e >> 2] |= (128 | i >> 6 & 63) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]) : (i = 65536 + ((1023 & i) << 10 | 1023 & t.charCodeAt(++r)), a[e >> 2] |= (240 | i >> 18) << n[3 & e++], a[e >> 2] |= (128 | i >> 12 & 63) << n[3 & e++], a[e >> 2] |= (128 | i >> 6 & 63) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]); this.lastByteIndex = e, this.bytes += e - this.start, e >= 64 ? (this.block = a[16], this.start = e - 64, this.hash(), this.hashed = !0) : this.start = e } return this.bytes > 4294967295 && (this.hBytes += this.bytes / 4294967296 << 0, this.bytes = this.bytes % 4294967296), this } }, t.prototype.finalize = function () { if (!this.finalized) { this.finalized = !0; var t = this.blocks, h = this.lastByteIndex; t[16] = this.block, t[h >> 2] |= o[3 & h], this.block = t[16], h >= 56 && (this.hashed || this.hash(), t[0] = this.block, t[16] = t[1] = t[2] = t[3] = t[4] = t[5] = t[6] = t[7] = t[8] = t[9] = t[10] = t[11] = t[12] = t[13] = t[14] = t[15] = 0), t[14] = this.hBytes << 3 | this.bytes >>> 29, t[15] = this.bytes << 3, this.hash() } }, t.prototype.hash = function () { var t, h, s = this.h0, i = this.h1, e = this.h2, r = this.h3, o = this.h4, n = this.blocks; for (t = 16; t < 80; ++t)h = n[t - 3] ^ n[t - 8] ^ n[t - 14] ^ n[t - 16], n[t] = h << 1 | h >>> 31; for (t = 0; t < 20; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i & e | ~i & r) + o + 1518500249 + n[t] << 0) << 5 | o >>> 27) + (s & (i = i << 30 | i >>> 2) | ~s & e) + r + 1518500249 + n[t + 1] << 0) << 5 | r >>> 27) + (o & (s = s << 30 | s >>> 2) | ~o & i) + e + 1518500249 + n[t + 2] << 0) << 5 | e >>> 27) + (r & (o = o << 30 | o >>> 2) | ~r & s) + i + 1518500249 + n[t + 3] << 0) << 5 | i >>> 27) + (e & (r = r << 30 | r >>> 2) | ~e & o) + s + 1518500249 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 40; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i ^ e ^ r) + o + 1859775393 + n[t] << 0) << 5 | o >>> 27) + (s ^ (i = i << 30 | i >>> 2) ^ e) + r + 1859775393 + n[t + 1] << 0) << 5 | r >>> 27) + (o ^ (s = s << 30 | s >>> 2) ^ i) + e + 1859775393 + n[t + 2] << 0) << 5 | e >>> 27) + (r ^ (o = o << 30 | o >>> 2) ^ s) + i + 1859775393 + n[t + 3] << 0) << 5 | i >>> 27) + (e ^ (r = r << 30 | r >>> 2) ^ o) + s + 1859775393 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 60; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i & e | i & r | e & r) + o - 1894007588 + n[t] << 0) << 5 | o >>> 27) + (s & (i = i << 30 | i >>> 2) | s & e | i & e) + r - 1894007588 + n[t + 1] << 0) << 5 | r >>> 27) + (o & (s = s << 30 | s >>> 2) | o & i | s & i) + e - 1894007588 + n[t + 2] << 0) << 5 | e >>> 27) + (r & (o = o << 30 | o >>> 2) | r & s | o & s) + i - 1894007588 + n[t + 3] << 0) << 5 | i >>> 27) + (e & (r = r << 30 | r >>> 2) | e & o | r & o) + s - 1894007588 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 80; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i ^ e ^ r) + o - 899497514 + n[t] << 0) << 5 | o >>> 27) + (s ^ (i = i << 30 | i >>> 2) ^ e) + r - 899497514 + n[t + 1] << 0) << 5 | r >>> 27) + (o ^ (s = s << 30 | s >>> 2) ^ i) + e - 899497514 + n[t + 2] << 0) << 5 | e >>> 27) + (r ^ (o = o << 30 | o >>> 2) ^ s) + i - 899497514 + n[t + 3] << 0) << 5 | i >>> 27) + (e ^ (r = r << 30 | r >>> 2) ^ o) + s - 899497514 + n[t + 4] << 0, e = e << 30 | e >>> 2; this.h0 = this.h0 + s << 0, this.h1 = this.h1 + i << 0, this.h2 = this.h2 + e << 0, this.h3 = this.h3 + r << 0, this.h4 = this.h4 + o << 0 }, t.prototype.hex = function () { this.finalize(); var t = this.h0, h = this.h1, s = this.h2, i = this.h3, e = this.h4; return r[t >> 28 & 15] + r[t >> 24 & 15] + r[t >> 20 & 15] + r[t >> 16 & 15] + r[t >> 12 & 15] + r[t >> 8 & 15] + r[t >> 4 & 15] + r[15 & t] + r[h >> 28 & 15] + r[h >> 24 & 15] + r[h >> 20 & 15] + r[h >> 16 & 15] + r[h >> 12 & 15] + r[h >> 8 & 15] + r[h >> 4 & 15] + r[15 & h] + r[s >> 28 & 15] + r[s >> 24 & 15] + r[s >> 20 & 15] + r[s >> 16 & 15] + r[s >> 12 & 15] + r[s >> 8 & 15] + r[s >> 4 & 15] + r[15 & s] + r[i >> 28 & 15] + r[i >> 24 & 15] + r[i >> 20 & 15] + r[i >> 16 & 15] + r[i >> 12 & 15] + r[i >> 8 & 15] + r[i >> 4 & 15] + r[15 & i] + r[e >> 28 & 15] + r[e >> 24 & 15] + r[e >> 20 & 15] + r[e >> 16 & 15] + r[e >> 12 & 15] + r[e >> 8 & 15] + r[e >> 4 & 15] + r[15 & e] }, t.prototype.toString = t.prototype.hex, t.prototype.digest = function () { this.finalize(); var t = this.h0, h = this.h1, s = this.h2, i = this.h3, e = this.h4; return [t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, 255 & t, h >> 24 & 255, h >> 16 & 255, h >> 8 & 255, 255 & h, s >> 24 & 255, s >> 16 & 255, s >> 8 & 255, 255 & s, i >> 24 & 255, i >> 16 & 255, i >> 8 & 255, 255 & i, e >> 24 & 255, e >> 16 & 255, e >> 8 & 255, 255 & e] }, t.prototype.array = t.prototype.digest, t.prototype.arrayBuffer = function () { this.finalize(); var t = new ArrayBuffer(20), h = new DataView(t); return h.setUint32(0, this.h0), h.setUint32(4, this.h1), h.setUint32(8, this.h2), h.setUint32(12, this.h3), h.setUint32(16, this.h4), t }; var y = c(); i ? module.exports = y : (h.sha1 = y, e && define(function () { return y })) }();
-    </script>
-    <script>
-        var tip = "",
-            filename = document.querySelector("#filename"),
-            copy = document.querySelector("#copy"),
-            copyImg = document.querySelector("#copyImg");
-        document.getElementById('file').addEventListener('change', function () {
-            (function (e) {
-                var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-                    file = e.files[0],
-                    chunkSize = 8388608,
-                    chunks = Math.ceil(file.size / chunkSize),
-                    currentChunk = 0,
-                    spark = window.sha1.create(),
-                    fileReader = new FileReader(),
-                    progress = document.querySelector("#progress"),
-                    sha1 = document.querySelector("#sha1"),
-                    time = new Date().getTime(),
-                    time2 = time;
-                tip = false;
-                showTips();
-                hideIcon();
-                console.log(file);
-                fileElement = e;
-                filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
-                progress.hidden = false;
-                fileElement.hidden = true;
-                sha1.textContent = "";
-                sha1.hidden = !true;
-                copy.hidden = true;
-                fileReader.onload = function (e) {
-                    console.log("read chunk nr", currentChunk + 1, "of", chunks);
-                    spark.update(e.target.result);
-                    currentChunk++;
-                    if (currentChunk < chunks) {
-                        loadNext()
-                    } else {
-                        progress.value = chunks;
-                        progress.hidden = true;
-                        fileElement.hidden = false;
-                        time = new Date().getTime() - time;
-                        console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
-                        console.info("computed hash", sha1.textContent = spark.hex());
-                        fileElement.value = null;
-                        sha1.hidden = false;
-                        copy.hidden = false;
-                    }
-                };
-                fileReader.onerror = function (e) {
-                    console.warn(sha1.textContent = e.target.error);
-                    progress.value = chunks;
-                    progress.hidden = true;
-                    fileElement.hidden = false;
-                    fileElement.value = null;
-                    sha1.hidden = false;
-                    copy.hidden = true;
-                };
+<body>
+	<div class="div d">
+		<table class="fill" style="text-align:center;font-size:2em;word-break:break-all">
+			<tbody>
+				<tr>
+					<td>
+						<p id="filename" style="text-decoration:underline;margin:16px;"></p>
+						<noscript>Enable Javascript</noscript>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<input type="file" id="file" class="fill y-100" style="cursor:pointer">
+	</div>
+	<div style="height:20px"></div>
+	<div class="div d">
+		<table class="fill" style="text-align:center;word-break:break-all">
+			<tbody>
+				<tr>
+					<td>
+						<progress id="progress" value="0" hidden style="width:32ch"></progress>
+						<span id="sha1">Files are processed locally</span>
+						<button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#sha1">
+							<img alt="Copy" src="content_copy.svg" id="copyImg">
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div style="height:20px;white-space:nowrap;text-align:center;font-size:18px;max-width:100%">
+		<div style="overflow-x:auto">
+			<a href="/list.html">Hash Tools</a>
+			|
+			<a href="https://github.com/js-org/js.org"
+				data-goatcounter-click="https://github.com/js-org/js.org">JS.ORG</a>
+			|
+			<a href="https://github.com/emn178/js-sha1"
+				data-goatcounter-click="https://github.com/emn178/js-sha1">JS-SHA1</a>
+			|
+			<a href="https://github.com/zenorocha/clipboard.js"
+				data-goatcounter-click="https://github.com/zenorocha/clipboard.js">Clipboard.js</a>
+			<img hidden src="content_copy.svg">
+			<img hidden src="done.svg">
+		</div>
+	</div>
+	<script>
+		/*
+		 * [js-sha1]{@link https://github.com/emn178/js-sha1}
+		 *
+		 * @version 0.6.0
+		 * @author Chen, Yi-Cyuan [emn178@gmail.com]
+		 * @copyright Chen, Yi-Cyuan 2014-2017
+		 * @license MIT
+		 */
+		!function () { "use strict"; function t(t) { t ? (f[0] = f[16] = f[1] = f[2] = f[3] = f[4] = f[5] = f[6] = f[7] = f[8] = f[9] = f[10] = f[11] = f[12] = f[13] = f[14] = f[15] = 0, this.blocks = f) : this.blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], this.h0 = 1732584193, this.h1 = 4023233417, this.h2 = 2562383102, this.h3 = 271733878, this.h4 = 3285377520, this.block = this.start = this.bytes = this.hBytes = 0, this.finalized = this.hashed = !1, this.first = !0 } var h = "object" == typeof window ? window : {}, s = !h.JS_SHA1_NO_NODE_JS && "object" == typeof process && process.versions && process.versions.node; s && (h = global); var i = !h.JS_SHA1_NO_COMMON_JS && "object" == typeof module && module.exports, e = "function" == typeof define && define.amd, r = "0123456789abcdef".split(""), o = [-2147483648, 8388608, 32768, 128], n = [24, 16, 8, 0], a = ["hex", "array", "digest", "arrayBuffer"], f = [], u = function (h) { return function (s) { return new t(!0).update(s)[h]() } }, c = function () { var h = u("hex"); s && (h = p(h)), h.create = function () { return new t }, h.update = function (t) { return h.create().update(t) }; for (var i = 0; i < a.length; ++i) { var e = a[i]; h[e] = u(e) } return h }, p = function (t) { var h = eval("require('crypto')"), s = eval("require('buffer').Buffer"), i = function (i) { if ("string" == typeof i) return h.createHash("sha1").update(i, "utf8").digest("hex"); if (i.constructor === ArrayBuffer) i = new Uint8Array(i); else if (void 0 === i.length) return t(i); return h.createHash("sha1").update(new s(i)).digest("hex") }; return i }; t.prototype.update = function (t) { if (!this.finalized) { var s = "string" != typeof t; s && t.constructor === h.ArrayBuffer && (t = new Uint8Array(t)); for (var i, e, r = 0, o = t.length || 0, a = this.blocks; r < o;) { if (this.hashed && (this.hashed = !1, a[0] = this.block, a[16] = a[1] = a[2] = a[3] = a[4] = a[5] = a[6] = a[7] = a[8] = a[9] = a[10] = a[11] = a[12] = a[13] = a[14] = a[15] = 0), s) for (e = this.start; r < o && e < 64; ++r)a[e >> 2] |= t[r] << n[3 & e++]; else for (e = this.start; r < o && e < 64; ++r)(i = t.charCodeAt(r)) < 128 ? a[e >> 2] |= i << n[3 & e++] : i < 2048 ? (a[e >> 2] |= (192 | i >> 6) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]) : i < 55296 || i >= 57344 ? (a[e >> 2] |= (224 | i >> 12) << n[3 & e++], a[e >> 2] |= (128 | i >> 6 & 63) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]) : (i = 65536 + ((1023 & i) << 10 | 1023 & t.charCodeAt(++r)), a[e >> 2] |= (240 | i >> 18) << n[3 & e++], a[e >> 2] |= (128 | i >> 12 & 63) << n[3 & e++], a[e >> 2] |= (128 | i >> 6 & 63) << n[3 & e++], a[e >> 2] |= (128 | 63 & i) << n[3 & e++]); this.lastByteIndex = e, this.bytes += e - this.start, e >= 64 ? (this.block = a[16], this.start = e - 64, this.hash(), this.hashed = !0) : this.start = e } return this.bytes > 4294967295 && (this.hBytes += this.bytes / 4294967296 << 0, this.bytes = this.bytes % 4294967296), this } }, t.prototype.finalize = function () { if (!this.finalized) { this.finalized = !0; var t = this.blocks, h = this.lastByteIndex; t[16] = this.block, t[h >> 2] |= o[3 & h], this.block = t[16], h >= 56 && (this.hashed || this.hash(), t[0] = this.block, t[16] = t[1] = t[2] = t[3] = t[4] = t[5] = t[6] = t[7] = t[8] = t[9] = t[10] = t[11] = t[12] = t[13] = t[14] = t[15] = 0), t[14] = this.hBytes << 3 | this.bytes >>> 29, t[15] = this.bytes << 3, this.hash() } }, t.prototype.hash = function () { var t, h, s = this.h0, i = this.h1, e = this.h2, r = this.h3, o = this.h4, n = this.blocks; for (t = 16; t < 80; ++t)h = n[t - 3] ^ n[t - 8] ^ n[t - 14] ^ n[t - 16], n[t] = h << 1 | h >>> 31; for (t = 0; t < 20; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i & e | ~i & r) + o + 1518500249 + n[t] << 0) << 5 | o >>> 27) + (s & (i = i << 30 | i >>> 2) | ~s & e) + r + 1518500249 + n[t + 1] << 0) << 5 | r >>> 27) + (o & (s = s << 30 | s >>> 2) | ~o & i) + e + 1518500249 + n[t + 2] << 0) << 5 | e >>> 27) + (r & (o = o << 30 | o >>> 2) | ~r & s) + i + 1518500249 + n[t + 3] << 0) << 5 | i >>> 27) + (e & (r = r << 30 | r >>> 2) | ~e & o) + s + 1518500249 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 40; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i ^ e ^ r) + o + 1859775393 + n[t] << 0) << 5 | o >>> 27) + (s ^ (i = i << 30 | i >>> 2) ^ e) + r + 1859775393 + n[t + 1] << 0) << 5 | r >>> 27) + (o ^ (s = s << 30 | s >>> 2) ^ i) + e + 1859775393 + n[t + 2] << 0) << 5 | e >>> 27) + (r ^ (o = o << 30 | o >>> 2) ^ s) + i + 1859775393 + n[t + 3] << 0) << 5 | i >>> 27) + (e ^ (r = r << 30 | r >>> 2) ^ o) + s + 1859775393 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 60; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i & e | i & r | e & r) + o - 1894007588 + n[t] << 0) << 5 | o >>> 27) + (s & (i = i << 30 | i >>> 2) | s & e | i & e) + r - 1894007588 + n[t + 1] << 0) << 5 | r >>> 27) + (o & (s = s << 30 | s >>> 2) | o & i | s & i) + e - 1894007588 + n[t + 2] << 0) << 5 | e >>> 27) + (r & (o = o << 30 | o >>> 2) | r & s | o & s) + i - 1894007588 + n[t + 3] << 0) << 5 | i >>> 27) + (e & (r = r << 30 | r >>> 2) | e & o | r & o) + s - 1894007588 + n[t + 4] << 0, e = e << 30 | e >>> 2; for (; t < 80; t += 5)s = (h = (i = (h = (e = (h = (r = (h = (o = (h = s << 5 | s >>> 27) + (i ^ e ^ r) + o - 899497514 + n[t] << 0) << 5 | o >>> 27) + (s ^ (i = i << 30 | i >>> 2) ^ e) + r - 899497514 + n[t + 1] << 0) << 5 | r >>> 27) + (o ^ (s = s << 30 | s >>> 2) ^ i) + e - 899497514 + n[t + 2] << 0) << 5 | e >>> 27) + (r ^ (o = o << 30 | o >>> 2) ^ s) + i - 899497514 + n[t + 3] << 0) << 5 | i >>> 27) + (e ^ (r = r << 30 | r >>> 2) ^ o) + s - 899497514 + n[t + 4] << 0, e = e << 30 | e >>> 2; this.h0 = this.h0 + s << 0, this.h1 = this.h1 + i << 0, this.h2 = this.h2 + e << 0, this.h3 = this.h3 + r << 0, this.h4 = this.h4 + o << 0 }, t.prototype.hex = function () { this.finalize(); var t = this.h0, h = this.h1, s = this.h2, i = this.h3, e = this.h4; return r[t >> 28 & 15] + r[t >> 24 & 15] + r[t >> 20 & 15] + r[t >> 16 & 15] + r[t >> 12 & 15] + r[t >> 8 & 15] + r[t >> 4 & 15] + r[15 & t] + r[h >> 28 & 15] + r[h >> 24 & 15] + r[h >> 20 & 15] + r[h >> 16 & 15] + r[h >> 12 & 15] + r[h >> 8 & 15] + r[h >> 4 & 15] + r[15 & h] + r[s >> 28 & 15] + r[s >> 24 & 15] + r[s >> 20 & 15] + r[s >> 16 & 15] + r[s >> 12 & 15] + r[s >> 8 & 15] + r[s >> 4 & 15] + r[15 & s] + r[i >> 28 & 15] + r[i >> 24 & 15] + r[i >> 20 & 15] + r[i >> 16 & 15] + r[i >> 12 & 15] + r[i >> 8 & 15] + r[i >> 4 & 15] + r[15 & i] + r[e >> 28 & 15] + r[e >> 24 & 15] + r[e >> 20 & 15] + r[e >> 16 & 15] + r[e >> 12 & 15] + r[e >> 8 & 15] + r[e >> 4 & 15] + r[15 & e] }, t.prototype.toString = t.prototype.hex, t.prototype.digest = function () { this.finalize(); var t = this.h0, h = this.h1, s = this.h2, i = this.h3, e = this.h4; return [t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, 255 & t, h >> 24 & 255, h >> 16 & 255, h >> 8 & 255, 255 & h, s >> 24 & 255, s >> 16 & 255, s >> 8 & 255, 255 & s, i >> 24 & 255, i >> 16 & 255, i >> 8 & 255, 255 & i, e >> 24 & 255, e >> 16 & 255, e >> 8 & 255, 255 & e] }, t.prototype.array = t.prototype.digest, t.prototype.arrayBuffer = function () { this.finalize(); var t = new ArrayBuffer(20), h = new DataView(t); return h.setUint32(0, this.h0), h.setUint32(4, this.h1), h.setUint32(8, this.h2), h.setUint32(12, this.h3), h.setUint32(16, this.h4), t }; var y = c(); i ? module.exports = y : (h.sha1 = y, e && define(function () { return y })) }();
+	</script>
+	<script>
+		var tip = "",
+			filename = document.querySelector("#filename"),
+			copy = document.querySelector("#copy"),
+			copyImg = document.querySelector("#copyImg");
+		document.getElementById('file').addEventListener('change', function () {
+			(function (e) {
+				var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+					file = e.files[0],
+					chunkSize = 8388608,
+					chunks = Math.ceil(file.size / chunkSize),
+					currentChunk = 0,
+					spark = window.sha1.create(),
+					fileReader = new FileReader(),
+					progress = document.querySelector("#progress"),
+					sha1 = document.querySelector("#sha1"),
+					time = new Date().getTime(),
+					time2 = time;
+				tip = false;
+				showTips();
+				hideIcon();
+				console.log(file);
+				fileElement = e;
+				filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
+				progress.hidden = false;
+				fileElement.hidden = true;
+				sha1.textContent = "";
+				sha1.hidden = !true;
+				copy.hidden = true;
+				fileReader.onload = function (e) {
+					console.log("read chunk nr", currentChunk + 1, "of", chunks);
+					spark.update(e.target.result);
+					currentChunk++;
+					if (currentChunk < chunks) {
+						loadNext()
+					} else {
+						progress.value = chunks;
+						progress.hidden = true;
+						fileElement.hidden = false;
+						time = new Date().getTime() - time;
+						console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
+						console.info("computed hash", sha1.textContent = spark.hex());
+						fileElement.value = null;
+						sha1.hidden = false;
+						copy.hidden = false;
+					}
+				};
+				fileReader.onerror = function (e) {
+					console.warn(sha1.textContent = e.target.error);
+					progress.value = chunks;
+					progress.hidden = true;
+					fileElement.hidden = false;
+					fileElement.value = null;
+					sha1.hidden = false;
+					copy.hidden = true;
+				};
 
-                function loadNext() {
-                    var t = new Date().getTime();
-                    if (currentChunk > 0)
-                        sha1.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
-                    time2 = t;
-                    progress.value = currentChunk;
-                    progress.max = chunks;
-                    var start = currentChunk * chunkSize,
-                        end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
-                    fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
-                }
-                loadNext();
-            })(this);
-        });
-        function showTips() {
-            if (tip !== false) {
-                if (tip == "Drag a file here") {
-                    tip = "Click to select file";
-                } else {
-                    tip = "Drag a file here";
-                }
-                filename.textContent = tip;
-            } else {
-                filename.style.textDecoration = null;
-            }
-        }
-        setInterval(showTips, 2000);
-        showTips();
-        if (!location.toString().startsWith("file:")) {
-            s = document.createElement("script");
-            s.src = "/track.js";
-            s.setAttribute("defer", "");
-            s.setAttribute("async", "");
-            document.head.appendChild(s);
-        }
-        function copied() {
-            setTimeout(hideIcon, 1000);
-            copyImg.src = "done.svg";
-        }
-        function hideIcon() {
-            copyImg.src = "content_copy.svg";
-        }
-    </script>
-    <script>/* clipboard.js v2.0.6 https://clipboardjs.com/ Licensed MIT © Zeno Rocha */!function (t, e) { "object" == typeof exports && "object" == typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define([], e) : "object" == typeof exports ? exports.ClipboardJS = e() : t.ClipboardJS = e() }(this, function () { return o = {}, r.m = n = [function (t, e) { t.exports = function (t) { var e; if ("SELECT" === t.nodeName) t.focus(), e = t.value; else if ("INPUT" === t.nodeName || "TEXTAREA" === t.nodeName) { var n = t.hasAttribute("readonly"); n || t.setAttribute("readonly", ""), t.select(), t.setSelectionRange(0, t.value.length), n || t.removeAttribute("readonly"), e = t.value } else { t.hasAttribute("contenteditable") && t.focus(); var o = window.getSelection(), r = document.createRange(); r.selectNodeContents(t), o.removeAllRanges(), o.addRange(r), e = o.toString() } return e } }, function (t, e) { function n() { } n.prototype = { on: function (t, e, n) { var o = this.e || (this.e = {}); return (o[t] || (o[t] = [])).push({ fn: e, ctx: n }), this }, once: function (t, e, n) { var o = this; function r() { o.off(t, r), e.apply(n, arguments) } return r._ = e, this.on(t, r, n) }, emit: function (t) { for (var e = [].slice.call(arguments, 1), n = ((this.e || (this.e = {}))[t] || []).slice(), o = 0, r = n.length; o < r; o++)n[o].fn.apply(n[o].ctx, e); return this }, off: function (t, e) { var n = this.e || (this.e = {}), o = n[t], r = []; if (o && e) for (var i = 0, a = o.length; i < a; i++)o[i].fn !== e && o[i].fn._ !== e && r.push(o[i]); return r.length ? n[t] = r : delete n[t], this } }, t.exports = n, t.exports.TinyEmitter = n }, function (t, e, n) { var d = n(3), h = n(4); t.exports = function (t, e, n) { if (!t && !e && !n) throw new Error("Missing required arguments"); if (!d.string(e)) throw new TypeError("Second argument must be a String"); if (!d.fn(n)) throw new TypeError("Third argument must be a Function"); if (d.node(t)) return s = e, f = n, (u = t).addEventListener(s, f), { destroy: function () { u.removeEventListener(s, f) } }; if (d.nodeList(t)) return a = t, c = e, l = n, Array.prototype.forEach.call(a, function (t) { t.addEventListener(c, l) }), { destroy: function () { Array.prototype.forEach.call(a, function (t) { t.removeEventListener(c, l) }) } }; if (d.string(t)) return o = t, r = e, i = n, h(document.body, o, r, i); throw new TypeError("First argument must be a String, HTMLElement, HTMLCollection, or NodeList"); var o, r, i, a, c, l, u, s, f } }, function (t, n) { n.node = function (t) { return void 0 !== t && t instanceof HTMLElement && 1 === t.nodeType }, n.nodeList = function (t) { var e = Object.prototype.toString.call(t); return void 0 !== t && ("[object NodeList]" === e || "[object HTMLCollection]" === e) && "length" in t && (0 === t.length || n.node(t[0])) }, n.string = function (t) { return "string" == typeof t || t instanceof String }, n.fn = function (t) { return "[object Function]" === Object.prototype.toString.call(t) } }, function (t, e, n) { var a = n(5); function i(t, e, n, o, r) { var i = function (e, n, t, o) { return function (t) { t.delegateTarget = a(t.target, n), t.delegateTarget && o.call(e, t) } }.apply(this, arguments); return t.addEventListener(n, i, r), { destroy: function () { t.removeEventListener(n, i, r) } } } t.exports = function (t, e, n, o, r) { return "function" == typeof t.addEventListener ? i.apply(null, arguments) : "function" == typeof n ? i.bind(null, document).apply(null, arguments) : ("string" == typeof t && (t = document.querySelectorAll(t)), Array.prototype.map.call(t, function (t) { return i(t, e, n, o, r) })) } }, function (t, e) { if ("undefined" != typeof Element && !Element.prototype.matches) { var n = Element.prototype; n.matches = n.matchesSelector || n.mozMatchesSelector || n.msMatchesSelector || n.oMatchesSelector || n.webkitMatchesSelector } t.exports = function (t, e) { for (; t && 9 !== t.nodeType;) { if ("function" == typeof t.matches && t.matches(e)) return t; t = t.parentNode } } }, function (t, e, n) { "use strict"; n.r(e); var o = n(0), r = n.n(o), i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }; function a(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } function c(t) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, c), this.resolveOptions(t), this.initSelection() } var l = (function (t, e, n) { return e && a(t.prototype, e), n && a(t, n), t }(c, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = e.action, this.container = e.container, this.emitter = e.emitter, this.target = e.target, this.text = e.text, this.trigger = e.trigger, this.selectedText = "" } }, { key: "initSelection", value: function () { this.text ? this.selectFake() : this.target && this.selectTarget() } }, { key: "selectFake", value: function () { var t = this, e = "rtl" == document.documentElement.getAttribute("dir"); this.removeFake(), this.fakeHandlerCallback = function () { return t.removeFake() }, this.fakeHandler = this.container.addEventListener("click", this.fakeHandlerCallback) || !0, this.fakeElem = document.createElement("textarea"), this.fakeElem.style.fontSize = "12pt", this.fakeElem.style.border = "0", this.fakeElem.style.padding = "0", this.fakeElem.style.margin = "0", this.fakeElem.style.position = "absolute", this.fakeElem.style[e ? "right" : "left"] = "-9999px"; var n = window.pageYOffset || document.documentElement.scrollTop; this.fakeElem.style.top = n + "px", this.fakeElem.setAttribute("readonly", ""), this.fakeElem.value = this.text, this.container.appendChild(this.fakeElem), this.selectedText = r()(this.fakeElem), this.copyText() } }, { key: "removeFake", value: function () { this.fakeHandler && (this.container.removeEventListener("click", this.fakeHandlerCallback), this.fakeHandler = null, this.fakeHandlerCallback = null), this.fakeElem && (this.container.removeChild(this.fakeElem), this.fakeElem = null) } }, { key: "selectTarget", value: function () { this.selectedText = r()(this.target), this.copyText() } }, { key: "copyText", value: function () { var e = void 0; try { e = document.execCommand(this.action) } catch (t) { e = !1 } this.handleResult(e) } }, { key: "handleResult", value: function (t) { this.emitter.emit(t ? "success" : "error", { action: this.action, text: this.selectedText, trigger: this.trigger, clearSelection: this.clearSelection.bind(this) }) } }, { key: "clearSelection", value: function () { this.trigger && this.trigger.focus(), document.activeElement.blur(), window.getSelection().removeAllRanges() } }, { key: "destroy", value: function () { this.removeFake() } }, { key: "action", set: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : "copy"; if (this._action = e, "copy" !== this._action && "cut" !== this._action) throw new Error('Invalid "action" value, use either "copy" or "cut"') }, get: function () { return this._action } }, { key: "target", set: function (t) { if (void 0 !== t) { if (!t || "object" !== (void 0 === t ? "undefined" : i(t)) || 1 !== t.nodeType) throw new Error('Invalid "target" value, use a valid Element'); if ("copy" === this.action && t.hasAttribute("disabled")) throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute'); if ("cut" === this.action && (t.hasAttribute("readonly") || t.hasAttribute("disabled"))) throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes'); this._target = t } }, get: function () { return this._target } }]), c), u = n(1), s = n.n(u), f = n(2), d = n.n(f), h = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }, p = function (t, e, n) { return e && y(t.prototype, e), n && y(t, n), t }; function y(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } var m = (function (t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e) }(v, s.a), p(v, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = "function" == typeof e.action ? e.action : this.defaultAction, this.target = "function" == typeof e.target ? e.target : this.defaultTarget, this.text = "function" == typeof e.text ? e.text : this.defaultText, this.container = "object" === h(e.container) ? e.container : document.body } }, { key: "listenClick", value: function (t) { var e = this; this.listener = d()(t, "click", function (t) { return e.onClick(t) }) } }, { key: "onClick", value: function (t) { var e = t.delegateTarget || t.currentTarget; this.clipboardAction && (this.clipboardAction = null), this.clipboardAction = new l({ action: this.action(e), target: this.target(e), text: this.text(e), container: this.container, trigger: e, emitter: this }) } }, { key: "defaultAction", value: function (t) { return b("action", t) } }, { key: "defaultTarget", value: function (t) { var e = b("target", t); if (e) return document.querySelector(e) } }, { key: "defaultText", value: function (t) { return b("text", t) } }, { key: "destroy", value: function () { this.listener.destroy(), this.clipboardAction && (this.clipboardAction.destroy(), this.clipboardAction = null) } }], [{ key: "isSupported", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : ["copy", "cut"], n = "string" == typeof e ? [e] : e, o = !!document.queryCommandSupported; return n.forEach(function (t) { o = o && !!document.queryCommandSupported(t) }), o } }]), v); function v(t, e) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, v); var n = function (t, e) { if (!t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return !e || "object" != typeof e && "function" != typeof e ? t : e }(this, (v.__proto__ || Object.getPrototypeOf(v)).call(this)); return n.resolveOptions(e), n.listenClick(t), n } function b(t, e) { var n = "data-clipboard-" + t; if (e.hasAttribute(n)) return e.getAttribute(n) } e.default = m }], r.c = o, r.d = function (t, e, n) { r.o(t, e) || Object.defineProperty(t, e, { enumerable: !0, get: n }) }, r.r = function (t) { "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(t, "__esModule", { value: !0 }) }, r.t = function (e, t) { if (1 & t && (e = r(e)), 8 & t) return e; if (4 & t && "object" == typeof e && e && e.__esModule) return e; var n = Object.create(null); if (r.r(n), Object.defineProperty(n, "default", { enumerable: !0, value: e }), 2 & t && "string" != typeof e) for (var o in e) r.d(n, o, function (t) { return e[t] }.bind(null, o)); return n }, r.n = function (t) { var e = t && t.__esModule ? function () { return t.default } : function () { return t }; return r.d(e, "a", e), e }, r.o = function (t, e) { return Object.prototype.hasOwnProperty.call(t, e) }, r.p = "", r(r.s = 6).default; function r(t) { if (o[t]) return o[t].exports; var e = o[t] = { i: t, l: !1, exports: {} }; return n[t].call(e.exports, e, e.exports, r), e.l = !0, e.exports } var n, o });</script>
-    <script>new ClipboardJS("#copy").on("success", copied)</script>
+				function loadNext() {
+					var t = new Date().getTime();
+					if (currentChunk > 0)
+						sha1.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+					time2 = t;
+					progress.value = currentChunk;
+					progress.max = chunks;
+					var start = currentChunk * chunkSize,
+						end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+					fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
+				}
+				loadNext();
+			})(this);
+		});
+		function showTips() {
+			if (tip !== false) {
+				if (tip == "Drag a file here") {
+					tip = "Click to select file";
+				} else {
+					tip = "Drag a file here";
+				}
+				filename.textContent = tip;
+			} else {
+				filename.style.textDecoration = null;
+			}
+		}
+		setInterval(showTips, 2000);
+		showTips();
+		if (!location.toString().startsWith("file:")) {
+			s = document.createElement("script");
+			s.src = "/track.js";
+			s.setAttribute("defer", "");
+			s.setAttribute("async", "");
+			document.head.appendChild(s);
+		}
+		function copied(e) {
+			setTimeout(hideIcon, 1000, e);
+			copyImg.src = "done.svg";
+		}
+		function hideIcon(e) {
+			copyImg.src = "content_copy.svg";
+			if (e) e.clearSelection();
+		}
+	</script>
+	<script>/* clipboard.js v2.0.6 https://clipboardjs.com/ Licensed MIT © Zeno Rocha */!function (t, e) { "object" == typeof exports && "object" == typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define([], e) : "object" == typeof exports ? exports.ClipboardJS = e() : t.ClipboardJS = e() }(this, function () { return o = {}, r.m = n = [function (t, e) { t.exports = function (t) { var e; if ("SELECT" === t.nodeName) t.focus(), e = t.value; else if ("INPUT" === t.nodeName || "TEXTAREA" === t.nodeName) { var n = t.hasAttribute("readonly"); n || t.setAttribute("readonly", ""), t.select(), t.setSelectionRange(0, t.value.length), n || t.removeAttribute("readonly"), e = t.value } else { t.hasAttribute("contenteditable") && t.focus(); var o = window.getSelection(), r = document.createRange(); r.selectNodeContents(t), o.removeAllRanges(), o.addRange(r), e = o.toString() } return e } }, function (t, e) { function n() { } n.prototype = { on: function (t, e, n) { var o = this.e || (this.e = {}); return (o[t] || (o[t] = [])).push({ fn: e, ctx: n }), this }, once: function (t, e, n) { var o = this; function r() { o.off(t, r), e.apply(n, arguments) } return r._ = e, this.on(t, r, n) }, emit: function (t) { for (var e = [].slice.call(arguments, 1), n = ((this.e || (this.e = {}))[t] || []).slice(), o = 0, r = n.length; o < r; o++)n[o].fn.apply(n[o].ctx, e); return this }, off: function (t, e) { var n = this.e || (this.e = {}), o = n[t], r = []; if (o && e) for (var i = 0, a = o.length; i < a; i++)o[i].fn !== e && o[i].fn._ !== e && r.push(o[i]); return r.length ? n[t] = r : delete n[t], this } }, t.exports = n, t.exports.TinyEmitter = n }, function (t, e, n) { var d = n(3), h = n(4); t.exports = function (t, e, n) { if (!t && !e && !n) throw new Error("Missing required arguments"); if (!d.string(e)) throw new TypeError("Second argument must be a String"); if (!d.fn(n)) throw new TypeError("Third argument must be a Function"); if (d.node(t)) return s = e, f = n, (u = t).addEventListener(s, f), { destroy: function () { u.removeEventListener(s, f) } }; if (d.nodeList(t)) return a = t, c = e, l = n, Array.prototype.forEach.call(a, function (t) { t.addEventListener(c, l) }), { destroy: function () { Array.prototype.forEach.call(a, function (t) { t.removeEventListener(c, l) }) } }; if (d.string(t)) return o = t, r = e, i = n, h(document.body, o, r, i); throw new TypeError("First argument must be a String, HTMLElement, HTMLCollection, or NodeList"); var o, r, i, a, c, l, u, s, f } }, function (t, n) { n.node = function (t) { return void 0 !== t && t instanceof HTMLElement && 1 === t.nodeType }, n.nodeList = function (t) { var e = Object.prototype.toString.call(t); return void 0 !== t && ("[object NodeList]" === e || "[object HTMLCollection]" === e) && "length" in t && (0 === t.length || n.node(t[0])) }, n.string = function (t) { return "string" == typeof t || t instanceof String }, n.fn = function (t) { return "[object Function]" === Object.prototype.toString.call(t) } }, function (t, e, n) { var a = n(5); function i(t, e, n, o, r) { var i = function (e, n, t, o) { return function (t) { t.delegateTarget = a(t.target, n), t.delegateTarget && o.call(e, t) } }.apply(this, arguments); return t.addEventListener(n, i, r), { destroy: function () { t.removeEventListener(n, i, r) } } } t.exports = function (t, e, n, o, r) { return "function" == typeof t.addEventListener ? i.apply(null, arguments) : "function" == typeof n ? i.bind(null, document).apply(null, arguments) : ("string" == typeof t && (t = document.querySelectorAll(t)), Array.prototype.map.call(t, function (t) { return i(t, e, n, o, r) })) } }, function (t, e) { if ("undefined" != typeof Element && !Element.prototype.matches) { var n = Element.prototype; n.matches = n.matchesSelector || n.mozMatchesSelector || n.msMatchesSelector || n.oMatchesSelector || n.webkitMatchesSelector } t.exports = function (t, e) { for (; t && 9 !== t.nodeType;) { if ("function" == typeof t.matches && t.matches(e)) return t; t = t.parentNode } } }, function (t, e, n) { "use strict"; n.r(e); var o = n(0), r = n.n(o), i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }; function a(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } function c(t) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, c), this.resolveOptions(t), this.initSelection() } var l = (function (t, e, n) { return e && a(t.prototype, e), n && a(t, n), t }(c, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = e.action, this.container = e.container, this.emitter = e.emitter, this.target = e.target, this.text = e.text, this.trigger = e.trigger, this.selectedText = "" } }, { key: "initSelection", value: function () { this.text ? this.selectFake() : this.target && this.selectTarget() } }, { key: "selectFake", value: function () { var t = this, e = "rtl" == document.documentElement.getAttribute("dir"); this.removeFake(), this.fakeHandlerCallback = function () { return t.removeFake() }, this.fakeHandler = this.container.addEventListener("click", this.fakeHandlerCallback) || !0, this.fakeElem = document.createElement("textarea"), this.fakeElem.style.fontSize = "12pt", this.fakeElem.style.border = "0", this.fakeElem.style.padding = "0", this.fakeElem.style.margin = "0", this.fakeElem.style.position = "absolute", this.fakeElem.style[e ? "right" : "left"] = "-9999px"; var n = window.pageYOffset || document.documentElement.scrollTop; this.fakeElem.style.top = n + "px", this.fakeElem.setAttribute("readonly", ""), this.fakeElem.value = this.text, this.container.appendChild(this.fakeElem), this.selectedText = r()(this.fakeElem), this.copyText() } }, { key: "removeFake", value: function () { this.fakeHandler && (this.container.removeEventListener("click", this.fakeHandlerCallback), this.fakeHandler = null, this.fakeHandlerCallback = null), this.fakeElem && (this.container.removeChild(this.fakeElem), this.fakeElem = null) } }, { key: "selectTarget", value: function () { this.selectedText = r()(this.target), this.copyText() } }, { key: "copyText", value: function () { var e = void 0; try { e = document.execCommand(this.action) } catch (t) { e = !1 } this.handleResult(e) } }, { key: "handleResult", value: function (t) { this.emitter.emit(t ? "success" : "error", { action: this.action, text: this.selectedText, trigger: this.trigger, clearSelection: this.clearSelection.bind(this) }) } }, { key: "clearSelection", value: function () { this.trigger && this.trigger.focus(), document.activeElement.blur(), window.getSelection().removeAllRanges() } }, { key: "destroy", value: function () { this.removeFake() } }, { key: "action", set: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : "copy"; if (this._action = e, "copy" !== this._action && "cut" !== this._action) throw new Error('Invalid "action" value, use either "copy" or "cut"') }, get: function () { return this._action } }, { key: "target", set: function (t) { if (void 0 !== t) { if (!t || "object" !== (void 0 === t ? "undefined" : i(t)) || 1 !== t.nodeType) throw new Error('Invalid "target" value, use a valid Element'); if ("copy" === this.action && t.hasAttribute("disabled")) throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute'); if ("cut" === this.action && (t.hasAttribute("readonly") || t.hasAttribute("disabled"))) throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes'); this._target = t } }, get: function () { return this._target } }]), c), u = n(1), s = n.n(u), f = n(2), d = n.n(f), h = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t }, p = function (t, e, n) { return e && y(t.prototype, e), n && y(t, n), t }; function y(t, e) { for (var n = 0; n < e.length; n++) { var o = e[n]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o) } } var m = (function (t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e) }(v, s.a), p(v, [{ key: "resolveOptions", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : {}; this.action = "function" == typeof e.action ? e.action : this.defaultAction, this.target = "function" == typeof e.target ? e.target : this.defaultTarget, this.text = "function" == typeof e.text ? e.text : this.defaultText, this.container = "object" === h(e.container) ? e.container : document.body } }, { key: "listenClick", value: function (t) { var e = this; this.listener = d()(t, "click", function (t) { return e.onClick(t) }) } }, { key: "onClick", value: function (t) { var e = t.delegateTarget || t.currentTarget; this.clipboardAction && (this.clipboardAction = null), this.clipboardAction = new l({ action: this.action(e), target: this.target(e), text: this.text(e), container: this.container, trigger: e, emitter: this }) } }, { key: "defaultAction", value: function (t) { return b("action", t) } }, { key: "defaultTarget", value: function (t) { var e = b("target", t); if (e) return document.querySelector(e) } }, { key: "defaultText", value: function (t) { return b("text", t) } }, { key: "destroy", value: function () { this.listener.destroy(), this.clipboardAction && (this.clipboardAction.destroy(), this.clipboardAction = null) } }], [{ key: "isSupported", value: function (t) { var e = 0 < arguments.length && void 0 !== t ? t : ["copy", "cut"], n = "string" == typeof e ? [e] : e, o = !!document.queryCommandSupported; return n.forEach(function (t) { o = o && !!document.queryCommandSupported(t) }), o } }]), v); function v(t, e) { !function (t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }(this, v); var n = function (t, e) { if (!t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return !e || "object" != typeof e && "function" != typeof e ? t : e }(this, (v.__proto__ || Object.getPrototypeOf(v)).call(this)); return n.resolveOptions(e), n.listenClick(t), n } function b(t, e) { var n = "data-clipboard-" + t; if (e.hasAttribute(n)) return e.getAttribute(n) } e.default = m }], r.c = o, r.d = function (t, e, n) { r.o(t, e) || Object.defineProperty(t, e, { enumerable: !0, get: n }) }, r.r = function (t) { "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(t, "__esModule", { value: !0 }) }, r.t = function (e, t) { if (1 & t && (e = r(e)), 8 & t) return e; if (4 & t && "object" == typeof e && e && e.__esModule) return e; var n = Object.create(null); if (r.r(n), Object.defineProperty(n, "default", { enumerable: !0, value: e }), 2 & t && "string" != typeof e) for (var o in e) r.d(n, o, function (t) { return e[t] }.bind(null, o)); return n }, r.n = function (t) { var e = t && t.__esModule ? function () { return t.default } : function () { return t }; return r.d(e, "a", e), e }, r.o = function (t, e) { return Object.prototype.hasOwnProperty.call(t, e) }, r.p = "", r(r.s = 6).default; function r(t) { if (o[t]) return o[t].exports; var e = o[t] = { i: t, l: !1, exports: {} }; return n[t].call(e.exports, e, e.exports, r), e.l = !0, e.exports } var n, o }); new ClipboardJS("#copy").on("success", copied)</script>
 </body>
 
 </html>
