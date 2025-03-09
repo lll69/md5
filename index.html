@@ -134,8 +134,9 @@
 					fileReader = new FileReader(),
 					progress = document.querySelector("#progress"),
 					md5 = document.querySelector("#md5"),
-					time = new Date().getTime(),
-					time2 = time;
+					time = Date.now(),
+					time2 = time,
+					updatedSize = 0;
 				tip = false;
 				showTips();
 				hideIcon();
@@ -157,7 +158,7 @@
 						progress.value = chunks;
 						progress.hidden = true;
 						fileElement.hidden = false;
-						time = new Date().getTime() - time;
+						time = Date.now() - time;
 						console.log("finished loading, took", time, "ms, average speed", (file.size / time * 1000 / 1024 / 1024), "MiB/s");
 						console.info("computed hash", md5.textContent = spark.end());
 						fileElement.value = null;
@@ -176,12 +177,17 @@
 				};
 
 				function loadNext() {
-					var t = new Date().getTime();
-					if (currentChunk > 0)
-						md5.textContent = (chunkSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
-					time2 = t;
-					progress.value = currentChunk;
-					progress.max = chunks;
+					var t = Date.now();
+					if (currentChunk > 0) {
+						updatedSize += chunkSize;
+						if (t - time2 > 500) {
+							md5.textContent = (updatedSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+							time2 = t;
+							updatedSize = 0;
+							progress.value = currentChunk;
+							progress.max = chunks;
+						}
+					}
 					var start = currentChunk * chunkSize,
 						end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
 					fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
