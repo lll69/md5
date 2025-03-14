@@ -1,7 +1,5 @@
 (function () {
 	if (!location.toString().startsWith("file:")) {
-		if (!sessionStorage.getItem("_swa") && document.referrer.indexOf(location.protocol + "//" + location.host) !== 0) { fetch("https://counter.dev/track?" + new URLSearchParams({ referrer: document.referrer, screen: screen.width + "x" + screen.height, user: "lll69", utcoffset: "8" })) }; sessionStorage.setItem("_swa", "1");
-
 		window.goatcounter = { allow_frame: true };
 		s = document.createElement("script");
 		s.src = "/count.js";
@@ -9,6 +7,9 @@
 		s.setAttribute("defer", "");
 		s.setAttribute("async", "");
 		document.head.appendChild(s);
+		if (localStorage.getItem("skipgc") !== "t") {
+			if (!sessionStorage.getItem("_swa") && document.referrer.indexOf(location.protocol + "//" + location.host) !== 0) { fetch("https://counter.dev/track?" + new URLSearchParams({ referrer: document.referrer, screen: screen.width + "x" + screen.height, user: "lll69", utcoffset: "0" })) }; sessionStorage.setItem("_swa", "1");
+		}
 
 		var md5Link = document.querySelector('a[href="https://github.com/satazor/js-spark-md5"]');
 		var sha1Link = document.querySelector('a[href="https://github.com/emn178/js-sha1"]');
@@ -19,9 +20,9 @@
 		if (md5Link != null && window.SparkMD5) {
 			hasMd5 = true;
 		} else if (sha1Link != null && window.sha1) {
-			hasSha1 = true;
+			hasSha1 = false;
 		} else if (sha256Link != null && window.sha256) {
-			hasSha256 = true;
+			hasSha256 = false;
 		}
 		function patchLink(link) {
 			link.innerText = "RustWasm";
