@@ -7,8 +7,18 @@
 		s.setAttribute("defer", "");
 		s.setAttribute("async", "");
 		document.head.appendChild(s);
-		if (localStorage.getItem("skipgc") !== "t") {
-			if (!sessionStorage.getItem("_swa") && document.referrer.indexOf(location.protocol + "//" + location.host) !== 0) { fetch("https://counter.dev/track?" + new URLSearchParams({ referrer: document.referrer, screen: screen.width + "x" + screen.height, user: "lll69", utcoffset: "0" })) }; sessionStorage.setItem("_swa", "1");
+		if (localStorage.getItem("skipgc") !== "t" && !sessionStorage.getItem("doNotTrack") && !localStorage.getItem("doNotTrack")) {
+			if (!sessionStorage.getItem("_swa") && document.referrer.indexOf(location.protocol + "//" + location.host) !== 0) {
+				sessionStorage.setItem("_swa", "1");
+				fetch("https://counter.dev/track?" + new URLSearchParams({ referrer: document.referrer, screen: screen.width + "x" + screen.height, id: "c2474bae-9e6c-48ea-9a93-39ae3f9dbdae", utcoffset: "0" }))
+			};
+			navigator.sendBeacon(
+				server + "https://counter.dev/trackpage",
+				new URLSearchParams({
+					id: "c2474bae-9e6c-48ea-9a93-39ae3f9dbdae",
+					page: window.location.pathname,
+				}),
+			);
 		}
 
 		var md5Link = document.querySelector('a[href="https://github.com/satazor/js-spark-md5"]');
@@ -17,7 +27,7 @@
 		var hasMd5 = false;
 		var hasSha1 = false;
 		var hasSha256 = false;
-		if (md5Link != null && window.SparkMD5) {
+		if (md5Link != null && document.querySelector('a[href="/text.html"]') != null && window.SparkMD5) {
 			hasMd5 = true;
 		} else if (sha1Link != null && window.sha1) {
 			hasSha1 = false;
