@@ -13,7 +13,7 @@
 				fetch("https://counter.dev/track?" + new URLSearchParams({ referrer: document.referrer, screen: screen.width + "x" + screen.height, id: "c2474bae-9e6c-48ea-9a93-39ae3f9dbdae", utcoffset: "0" }))
 			};
 			navigator.sendBeacon(
-				server + "https://counter.dev/trackpage",
+				"https://counter.dev/trackpage",
 				new URLSearchParams({
 					id: "c2474bae-9e6c-48ea-9a93-39ae3f9dbdae",
 					page: window.location.pathname,
