@@ -3,10 +3,10 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Get MD5</title>
+	<title>Get MD5 - File MD5 hash calculator</title>
 	<meta content="width=device-width, initial-scale=1" name="viewport">
-	<meta name="description" content="Online MD5 hash calculator">
-	<meta name="keywords" content="md5,hash,calculator">
+	<meta name="description" content="Online file MD5 hash calculator">
+	<meta name="keywords" content="md5,file,hash,calculator">
 	<link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
 	<link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
 	<!--
@@ -90,7 +90,7 @@
 				<tr>
 					<td>
 						<progress id="progress" value="0" hidden style="width:32ch"></progress>
-						<span id="md5">Files are processed locally</span>
+						<p id="md5" style="width:100%">Files are processed locally</p>
 						<button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#md5">
 							<img alt="Copy" src="content_copy.svg" id="copyImg">
 						</button>
@@ -122,7 +122,9 @@
 		var tip = "",
 			filename = document.querySelector("#filename"),
 			copy = document.querySelector("#copy"),
-			copyImg = document.querySelector("#copyImg");
+			copyImg = document.querySelector("#copyImg"),
+			isMobile = (/Android|webOS|iPhone|iPod|Mobile/i).test(navigator.userAgent),
+			tipsInterval = 0;
 		document.getElementById('file').addEventListener('change', function () {
 			(function (e) {
 				var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
@@ -198,16 +200,20 @@
 		function showTips() {
 			if (tip !== false) {
 				if (tip == "Drag a file here") {
-					tip = "Click to select file";
-				} else {
+					tip = "Click here to select file";
+				} else if (!isMobile) {
 					tip = "Drag a file here";
+				} else {
+					tip = "Click here to select file";
+					clearInterval(tipsInterval);
 				}
 				filename.textContent = tip;
 			} else {
 				filename.style.textDecoration = null;
+				clearInterval(tipsInterval);
 			}
 		}
-		setInterval(showTips, 2000);
+		tipsInterval = setInterval(showTips, 2000);
 		showTips();
 		if (!location.toString().startsWith("file:")) {
 			s = document.createElement("script");
