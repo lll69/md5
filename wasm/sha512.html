@@ -3,10 +3,10 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Get MD5 - WASM File MD5 hash calculator</title>
+	<title>Get SHA512 - WASM File SHA512 hash calculator</title>
 	<meta content="width=device-width, initial-scale=1" name="viewport">
-	<meta name="description" content="Online file MD5 hash calculator using WASM">
-	<meta name="keywords" content="md5,file,hash,calculator">
+	<meta name="description" content="Online file SHA512 hash calculator using WASM">
+	<meta name="keywords" content="sha512,file,hash,calculator">
 	<link rel="icon" type="image/png" href="https://js.org/ico/favicon-32.png">
 	<link rel="icon" type="image/svg+xml" href="https://js.org/ico/favicon.svg">
 	<!--
@@ -90,8 +90,8 @@
 				<tr>
 					<td>
 						<progress id="progress" value="0" hidden style="width:32ch"></progress>
-						<p id="md5" style="width:100%">Files are processed locally</p>
-						<button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#md5">
+						<p id="sha512" style="width:100%">Files are processed locally</p>
+						<button id="copy" title="Copy" hidden style="user-select:none" data-clipboard-target="#sha512">
 							<img alt="Copy" src="/content_copy.svg" id="copyImg">
 						</button>
 					</td>
@@ -160,7 +160,7 @@
 					hasherId = ++hashCount,
 					fileReader = new FileReader(),
 					progress = document.querySelector("#progress"),
-					md5 = document.querySelector("#md5"),
+					sha512 = document.querySelector("#sha512"),
 					time = Date.now(),
 					time2 = time,
 					updatedSize = 0,
@@ -172,10 +172,10 @@
 				filename.textContent = `${file.name}(${file.size} ${file.size > 1 ? "bytes" : "byte"})`;
 				progress.hidden = false;
 				fileElement.hidden = true;
-				md5.textContent = "";
-				md5.hidden = !true;
+				sha512.textContent = "";
+				sha512.hidden = !true;
 				copy.hidden = true;
-				worker.postMessage({ type: "createMD5", id: hasherId });
+				worker.postMessage({ type: "createSha512", id: hasherId });
 				fileReader.onload = function (e) {
 					console.log("read chunk nr", currentChunk + 1, "of", chunks);
 					var resultArray = new Uint8Array(e.target.result);
@@ -190,12 +190,12 @@
 					}
 				};
 				fileReader.onerror = function (e) {
-					console.warn(md5.textContent = e.target.error);
+					console.warn(sha512.textContent = e.target.error);
 					progress.value = chunks;
 					progress.hidden = true;
 					fileElement.hidden = false;
 					fileElement.value = null;
-					md5.hidden = false;
+					sha512.hidden = false;
 					copy.hidden = true;
 				};
 				updateProgress = function (id, len) {
@@ -204,7 +204,7 @@
 						updatedSize += len;
 						loadedSize += len;
 						if (t - time2 > 500) {
-							md5.textContent = (updatedSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
+							sha512.textContent = (updatedSize / (t - time2) * 1000 / 1024 / 1024).toFixed(2) + "MiB/s";
 							time2 = t;
 							updatedSize = 0;
 							progress.value = loadedSize;
@@ -216,9 +216,9 @@
 					if (id == hasherId) {
 						progress.hidden = true;
 						fileElement.hidden = false;
-						console.info("computed hash", md5.textContent = result);
+						console.info("computed hash", sha512.textContent = result);
 						fileElement.value = null;
-						md5.hidden = false;
+						sha512.hidden = false;
 						copy.hidden = false;
 					}
 				}
