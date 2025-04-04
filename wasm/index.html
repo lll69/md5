@@ -274,7 +274,7 @@
 		}
 		setTimeout(function () {
 			worker.postMessage({ type: "queryWasm" });
-		}, 1000);
+		}, 8000);
 		if (!location.toString().startsWith("file:")) {
 			s = document.createElement("script");
 			s.src = "/track.js";
