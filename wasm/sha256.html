@@ -135,7 +135,7 @@
 		if (window.Worker) {
 			if (window.WebAssembly) {
 				try {
-					worker = new Worker("/wasm/wasm_worker.js");
+					worker = new Worker("/wasm_worker.js");
 				} catch (e) {
 					console.error(e);
 					filename.textContent = "Failed to load the Web Worker: " + e;
@@ -220,6 +220,7 @@
 						fileElement.value = null;
 						sha256.hidden = false;
 						copy.hidden = false;
+						worker.postMessage({ type: "freeHash", id: hasherId });
 					}
 				}
 				function loadNext() {
